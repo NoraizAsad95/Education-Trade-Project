@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EducationTrade.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace EducationTrade.Core.Entities
 
         public int CoinReward { get; set; }
         
-        public TaskStatus Status { get; set; }
+        public TaskState Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     }
