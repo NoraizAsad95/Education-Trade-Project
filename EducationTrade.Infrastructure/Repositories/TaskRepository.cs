@@ -26,7 +26,7 @@ namespace EducationTrade.Infrastructure.Repositories
             return task;
         }
 
-        public async Task<List<Core.Entities.Task>> GetAvailableTaskAsync(int id)
+        public async Task<List<Core.Entities.Task>> GetAvailableTaskAsync()
         {
                 return await _context.Tasks
                 .Where(t => t.Status == TaskState.Pending)

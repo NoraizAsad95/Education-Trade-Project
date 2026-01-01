@@ -9,7 +9,7 @@ namespace EducationTrade.Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetByIdAsync(int userId);
+        Task<User?>  GetByIdAsync(int userId);
         Task<User?> GetByEmailAsync(string email);
         Task<List<User>> GetAllAsync();
         Task<User> AddAsync(User user);
