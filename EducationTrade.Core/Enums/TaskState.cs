@@ -12,6 +12,6 @@ namespace EducationTrade.Core.Enums
         Accepted = 1,
         Completed = 2,
         Cancelled = 3,
-        Pending = 4,
+        Pending = 4
     }
 }
