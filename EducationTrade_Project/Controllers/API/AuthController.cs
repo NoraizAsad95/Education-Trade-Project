@@ -1,18 +1,15 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EducationTrade.Presentattion.Controllers.API
+namespace EducationTrade.Presentation.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IUserRepository _userRepository;
+       
 
         public AuthController(IAuthService authService)
         {
