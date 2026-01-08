@@ -8,7 +8,7 @@ namespace EducationTrade.Web.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -17,21 +17,22 @@ namespace EducationTrade.Web.Controllers.API
         public TaskController(ITaskService taskService, IUserRepository userRepository)
         {
             _taskService = taskService;
-            _userRepository = _userRepository;
+            _userRepository = userRepository;
         }
         [HttpGet("available")]
         public async Task<IActionResult> GetAvailableTask()
         {
             var result = await _taskService.GetAvailableTaskAsync();
 
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result.Error);
             }
-            return Ok(result.Data);
+            return Ok(new { message = result.Data });
         }
 
-        public async Task<IActionResult> CreateTask(CreateTaskDto dto,int creatorId)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateTask(CreateTaskDto dto, int creatorId)
         {
             var user = await _userRepository.GetByIdAsync(creatorId);
 
@@ -43,7 +44,51 @@ namespace EducationTrade.Web.Controllers.API
             var result = await _taskService.CreateTaskAsync(dto, creatorId);
             if (!result.IsSuccess)
                 return BadRequest(result.Error);
-            return Ok ("Task Created Successfully");
+            return Ok("Task Created Successfully");
+        }
+
+        [HttpGet("{taskId}/accept")]
+
+        public async Task<IActionResult> AcceptTask(int taskId, int acceptorId)
+        {
+            var result = await _taskService.AcceptTaskAsync(taskId, acceptorId);
+
+            if (!result.IsSuccess)
+                return BadRequest(result.Error);
+            return Ok(new { message = "Task accepted successfully" });
+        }
+
+        [HttpGet("{taskId}/complete")]
+        public async Task<IActionResult> CompleteTask(int taskId, int creatorId)
+        {
+            var result = await _taskService.CompleteTaskAsync(taskId, creatorId);
+            if(!result.IsSuccess)
+                return BadRequest(result.Error);
+            return Ok(new { message = "Task completed successfully" });
+
+        }
+
+        [HttpGet("{userId}/my-created")]
+        public async Task<IActionResult> GetMyCreatedTasks(int userId)
+        {
+            var result = await _taskService.GetMyCreatedTasksAsync(userId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(new { message = result.Error });
+            }
+            return Ok(new
+            {
+                message = "My created tasks retrieved", result.Data
+            });
+        }
+
+        [HttpGet("{userId}/my-accepted")]
+        public async Task<IActionResult> GetMyAcceptedTasks(int userId)
+        {
+            var result = await _taskService.GetMyAcceptedTasksAsync(userId);
+            if (!result.IsSuccess)
+                return BadRequest(new { message = result.Error });
+            return Ok(new { message = "My accepted tasks retrieved", result.Data });
         }
     }
 }
