@@ -41,5 +41,6 @@ app.UseAuthorization();
 
 // API routing
 app.MapControllers();
+app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();

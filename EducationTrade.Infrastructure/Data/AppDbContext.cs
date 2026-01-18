@@ -31,6 +31,9 @@ namespace EducationTrade.Infrastructure.Data
                 entity.Property(e => e.AverageRating)
           .HasPrecision(3, 2); // e.g. 4.50 max
             });
+            modelBuilder.Entity<User>()
+               .Property(u => u.CoinBalance)
+               .HasDefaultValue(200);
             modelBuilder.Entity<Core.Entities.Task>(entity =>
             {
                 entity.Property(e => e.CoinReward).IsRequired();

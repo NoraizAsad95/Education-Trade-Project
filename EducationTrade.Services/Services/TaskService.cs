@@ -80,7 +80,7 @@ namespace EducationTrade.Services.Services
             return Result.Success();
         }
 
-        public async Task<Result> CreateTaskAsync(CreateTaskDto dto, int creatorId)
+        public async Task<Result> CreateTaskAsync(CreateTaskDto dto, int CreatedById)
         {
             if(string.IsNullOrWhiteSpace(dto.Title))
             {
@@ -90,7 +90,7 @@ namespace EducationTrade.Services.Services
             {
                 return Result.Failure("Coin Reward must be greater then 0");
             }
-            var creator = await _userRepository.GetByIdAsync(creatorId);
+            var creator = await _userRepository.GetByIdAsync(CreatedById);
             if (creator == null)
             {
                 return Result.Failure("User not found");
@@ -108,7 +108,8 @@ namespace EducationTrade.Services.Services
                 Description = dto.Description,
                 CoinReward = dto.CoinReward,
                 Status = TaskState.Pending,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                CreatedById = CreatedById
             };
             var savedTask = await _taskRepository.AddAsync(task);
 
