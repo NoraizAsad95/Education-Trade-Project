@@ -11,6 +11,6 @@ namespace EducationTrade.Core.Interfaces
     public interface IAuthService
     {
         Task<Result> RegisterAsync(RegisterDto dto);
-        Task<Result> LoginAsync(LoginDto dto);
+        Task<Result<int>> LoginAsync(LoginDto dto);
     }
 }

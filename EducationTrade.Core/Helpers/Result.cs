@@ -22,7 +22,7 @@ namespace EducationTrade.Core.Helpers
         }
     }
 
-    public class Result<T>                            // For Operations With Data
+    public class Result<T>                        // For Operations With Data
     {
         public bool IsSuccess { get; set;}
         public string? Error { get; set; }

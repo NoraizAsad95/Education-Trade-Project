@@ -1,7 +1,8 @@
-using EducationTrade.Infrastructure.Data;
 using EducationTrade.Core.Interfaces;
+using EducationTrade.Infrastructure.Data;
 using EducationTrade.Infrastructure.Repositories;
 using EducationTrade.Services.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,13 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    });
 var app = builder.Build();
 
 // Swagger in Development

@@ -47,22 +47,22 @@ namespace EducationTrade.Services.Services
             //return Result.Success(savedUser.UserId);
 
         }
-        public async Task<Result> LoginAsync(LoginDto dto)
+        public async Task<Result<int>> LoginAsync(LoginDto dto)
         {
             var user = await _userRepository.GetByEmailAsync(dto.Email);
             if (user == null)
             {
-                return Result.Failure("Invalid email or password");
+                return Result<int>.Failure("Invalid email or password");
             }
             if(!PasswordHasher.VerifyPassword(dto.Password,user.Password))
             {
-                return Result.Failure("Invalid email or password");
+                return Result<int>.Failure("Invalid email or password");
             }
             if(!user.IsActive)
             {
-                return Result.Failure("Account is deactivated.");
+                return Result<int>.Failure("Account is deactivated.");
             }
-            return Result.Success();
+            return Result<int>.Success(user.UserId);
             //return Result.Success(user.UserId);
 
         }
