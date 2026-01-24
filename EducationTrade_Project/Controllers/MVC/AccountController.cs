@@ -62,5 +62,11 @@ namespace EducationTrade.Presentation.Controllers.MVC
             TempData["Success"] = $"Welcome back, {user.FullName}!";
             return RedirectToAction("Index", "Dashboard");
         }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            TempData["Success"] = "You have been logged out.";
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
