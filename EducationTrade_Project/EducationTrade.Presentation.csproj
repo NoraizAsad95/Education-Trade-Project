@@ -25,4 +25,8 @@
     <ProjectReference Include="..\EducationTrade.Services\EducationTrade.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Account\" />
+  </ItemGroup>
+
 </Project>

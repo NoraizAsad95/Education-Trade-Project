@@ -60,7 +60,8 @@ namespace EducationTrade.Presentation.Controllers.MVC
             HttpContext.Session.SetString("UserName", user.FullName);
 
             TempData["Success"] = $"Welcome back, {user.FullName}!";
-            return RedirectToAction("Index", "Dashboard");
+            return View("LogIn");
+           // return RedirectToAction("Index", "Dashboard");
         }
         public IActionResult Logout()
         {
