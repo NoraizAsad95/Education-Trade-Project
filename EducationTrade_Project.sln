@@ -16,6 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 	EndProjectSection
+	ProjectSection(FolderGlobals) = preProject
+		C_5_4Users_4CloudConsultings_4Source_4Repos_4EducationTrade_3Project_4appsetting_1json__JsonSchema = https://acp-protocol.dev/schemas/v1/attempts.schema.json
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EducationTrade.Tests", "EducationTrade.Tests\EducationTrade.Tests.csproj", "{E5A2DC2B-9728-43A8-B396-F38CC13CE60B}"
 EndProject
