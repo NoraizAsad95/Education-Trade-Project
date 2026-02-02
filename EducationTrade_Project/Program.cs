@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers (API)
-builder.Services.AddControllers();
-
+//builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -37,7 +37,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";
+        options.LoginPath = "/Account/LogIn";
         options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromHours(2);
     });
@@ -54,10 +54,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseSession();
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // API routing
-app.MapControllers();
-app.MapGet("/", () => Results.Redirect("/swagger"));
 
+app.MapGet("/", () => Results.Redirect("/swagger"));
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Account}/{action=LogIn}/{id?}");
+app.MapControllers();
 app.Run();
