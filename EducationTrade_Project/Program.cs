@@ -53,6 +53,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
@@ -60,9 +61,9 @@ app.UseAuthorization();
 
 // API routing
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Account}/{action=LogIn}/{id?}");
+//app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Account}/{action=LogIn}/{id?}");
 app.MapControllers();
 app.Run();
