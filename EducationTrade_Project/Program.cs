@@ -64,6 +64,6 @@ app.UseAuthorization();
 //app.MapGet("/", () => Results.Redirect("/swagger"));
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=LogIn}/{id?}");
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 app.MapControllers();
 app.Run();

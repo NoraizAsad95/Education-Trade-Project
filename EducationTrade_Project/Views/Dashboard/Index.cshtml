@@ -1,0 +1,89 @@
+﻿@model EducationTrade.Web.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Welcome, @Model.FullName! 👋</h1>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">💰 Coin Balance</h5>
+                    <h2 class="text-primary">@Model.CoinBalance</h2>
+                </div>
+            </div>
+       
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">📝 Tasks Created</h5>
+                    <h2 class="text-info">@Model.TotalTasksCreated</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">✅ Tasks Accepted</h5>
+                    <h2 class="text-success">@Model.TotalTasksAccepted</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Created Tasks -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>My Created Tasks</h3>
+            @if (Model.MyCreatedTasks.Any())
+            {
+                @foreach (var task in Model.MyCreatedTasks)
+                {
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5>@task.Title</h5>
+                            <p>@task.Description</p>
+                            <span class="badge bg-primary">@task.CoinReward coins</span>
+                            <span class="badge bg-info">@task.Status</span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No tasks created yet.</p>
+            }
+        </div>
+
+        <!-- My Accepted Tasks -->
+        <div class="col-md-6">
+            <h3>My Accepted Tasks</h3>
+            @if (Model.MyAcceptedTasks.Any())
+            {
+                @foreach (var task in Model.MyAcceptedTasks)
+                {
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5>@task.Title</h5>
+                            <p>@task.Description</p>
+                            <span class="badge bg-success">@task.CoinReward coins</span>
+                            <span class="badge bg-warning">@task.Status</span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No tasks accepted yet.</p>
+            }
+        </div>
+    </div>
+</div>
