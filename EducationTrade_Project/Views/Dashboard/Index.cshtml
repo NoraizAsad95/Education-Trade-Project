@@ -4,86 +4,102 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Welcome, @Model.FullName! 👋</h1>
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="p-4 rounded shadow-sm text-white"
+             style="background: linear-gradient(90deg, #0d6efd, #0a58ca);">
+            <h2 class="mb-0">Welcome back, @Model.FullName 👋</h2>
+            <small>Here’s what’s happening with your tasks today.</small>
         </div>
     </div>
+</div>
 
-    <!-- Statistics Cards -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">💰 Coin Balance</h5>
-                    <h2 class="text-primary">@Model.CoinBalance</h2>
-                </div>
-            </div>
-       
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">📝 Tasks Created</h5>
-                    <h2 class="text-info">@Model.TotalTasksCreated</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">✅ Tasks Accepted</h5>
-                    <h2 class="text-success">@Model.TotalTasksAccepted</h2>
-                </div>
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100 text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Coin Balance</h6>
+                <h2 class="fw-bold text-primary">@Model.CoinBalance</h2>
             </div>
         </div>
     </div>
 
-    <!-- My Created Tasks -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <h3>My Created Tasks</h3>
-            @if (Model.MyCreatedTasks.Any())
-            {
-                @foreach (var task in Model.MyCreatedTasks)
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100 text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Tasks Created</h6>
+                <h2 class="fw-bold text-info">@Model.TotalTasksCreated</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100 text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Tasks Accepted</h6>
+                <h2 class="fw-bold text-success">@Model.TotalTasksAccepted</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4">
+
+    <!-- Created Tasks -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+                My Created Tasks
+            </div>
+            <div class="card-body">
+                @if (Model.MyCreatedTasks.Any())
                 {
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <h5>@task.Title</h5>
-                            <p>@task.Description</p>
+                    foreach (var task in Model.MyCreatedTasks)
+                    {
+                        <div class="border rounded p-3 mb-3">
+                            <h6 class="fw-bold mb-1">@task.Title</h6>
+                            <p class="text-muted small mb-2">@task.Description</p>
                             <span class="badge bg-primary">@task.CoinReward coins</span>
-                            <span class="badge bg-info">@task.Status</span>
+                            <span class="badge bg-secondary">@task.Status</span>
                         </div>
-                    </div>
+                    }
                 }
-            }
-            else
-            {
-                <p>No tasks created yet.</p>
-            }
-        </div>
-
-        <!-- My Accepted Tasks -->
-        <div class="col-md-6">
-            <h3>My Accepted Tasks</h3>
-            @if (Model.MyAcceptedTasks.Any())
-            {
-                @foreach (var task in Model.MyAcceptedTasks)
+                else
                 {
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <h5>@task.Title</h5>
-                            <p>@task.Description</p>
-                            <span class="badge bg-success">@task.CoinReward coins</span>
-                            <span class="badge bg-warning">@task.Status</span>
-                        </div>
-                    </div>
+                    <p class="text-muted">No tasks created yet.</p>
                 }
-            }
-            else
-            {
-                <p>No tasks accepted yet.</p>
-            }
+            </div>
         </div>
     </div>
+
+    <!-- Accepted Tasks -->
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+                My Accepted Tasks
+            </div>
+            <div class="card-body">
+                @if (Model.MyAcceptedTasks.Any())
+                {
+                    foreach (var task in Model.MyAcceptedTasks)
+                    {
+                        <div class="border rounded p-3 mb-3">
+                            <h6 class="fw-bold mb-1">@task.Title</h6>
+                            <p class="text-muted small mb-2">@task.Description</p>
+                            <span class="badge bg-success">@task.CoinReward coins</span>
+                            <span class="badge bg-warning text-dark">@task.Status</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No tasks accepted yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+
 </div>
