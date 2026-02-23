@@ -157,7 +157,7 @@ namespace EducationTrade.Presentation.Controllers.MVC
             }
             else
             {
-                TempData["Success"] = "Task accepted successfully!";
+                TempData["Success"] = "Task marked as complete! Coins transferred to accepter.";
             }
             return RedirectToAction("Index", "Dashboard");
         }
