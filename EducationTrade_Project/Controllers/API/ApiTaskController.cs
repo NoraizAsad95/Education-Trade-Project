@@ -9,12 +9,12 @@ namespace EducationTrade.Web.Controllers.API
     [Route("api/[controller]")]
     [ApiController]
 
-    public class TaskController : ControllerBase
+    public class ApiTaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
         private readonly IUserRepository _userRepository;
 
-        public TaskController(ITaskService taskService, IUserRepository userRepository)
+        public ApiTaskController(ITaskService taskService, IUserRepository userRepository)
         {
             _taskService = taskService;
             _userRepository = userRepository;

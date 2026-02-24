@@ -64,7 +64,7 @@ namespace EducationTrade.Presentation.Controllers.MVC
         }
 
 
-        [HttpGet]
+        
         public async Task<IActionResult> CreateTask()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -119,7 +119,8 @@ namespace EducationTrade.Presentation.Controllers.MVC
             }
 
             TempData["Success"] = "Task created successfully! Your coins have been locked.";
-            return RedirectToAction("Browse");
+            //return RedirectToAction("Browse");
+            return View("CreateTask");
         }
 
         [HttpPost]
