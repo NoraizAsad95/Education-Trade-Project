@@ -95,9 +95,11 @@ namespace EducationTrade.Presentation.Controllers.MVC
             if (!ModelState.IsValid)
             {
                 var user = await _userRepository.GetByIdAsync(userId.Value);
+                if (user == null) return RedirectToAction("Login", "Account");
+
                 viewModel.UserCoinBalance = user.CoinBalance;
                 viewModel.UserName = user.FullName;
-                return View(viewModel);
+                return View("CreateTask", viewModel);
             }
 
             var dto = new CreateTaskDto
@@ -113,16 +115,16 @@ namespace EducationTrade.Presentation.Controllers.MVC
             {
                 ModelState.AddModelError("", result.Error);
                 var user = await _userRepository.GetByIdAsync(userId.Value);
+                if (user == null) return RedirectToAction("Login", "Account");
+
                 viewModel.UserCoinBalance = user.CoinBalance;
                 viewModel.UserName = user.FullName;
-                return View(viewModel);
+                return View("CreateTask", viewModel);
             }
 
             TempData["Success"] = "Task created successfully! Your coins have been locked.";
-            //return RedirectToAction("Browse");
-            return View("CreateTask");
+            return RedirectToAction("Browse");
         }
-
         [HttpPost]
         public async Task<IActionResult> AcceptTask(int id)
         {
