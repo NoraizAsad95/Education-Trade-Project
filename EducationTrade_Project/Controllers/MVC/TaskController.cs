@@ -54,7 +54,7 @@ namespace EducationTrade.Presentation.Controllers.MVC
                     CreatorName = creator.FullName,
                     
                     CreatedAt = task.CreatedAt,
-                    //TimeAgo = GetTimeAgo(task.CreatedAt),
+                    TimeAgo = GetTimeAgo(task.CreatedAt),
                     //CanAccept = task.CreatedById != userId.Value,  // Can't accept own tasks
                    // StatusBadgeClass = GetStatusBadgeClass(task.Status.ToString())
                 });
