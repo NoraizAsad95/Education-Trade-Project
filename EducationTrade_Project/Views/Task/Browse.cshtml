@@ -1,0 +1,415 @@
+﻿@model EducationTrade.Presentation.ViewModel.TaskViewModel
+
+@{
+    ViewData["Title"] = "Browse Tasks";
+}
+
+<style>
+    .task-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-left: 4px solid #007bff;
+    }
+
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+    .coin-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 8px 15px;
+        border-radius: 25px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .user-balance-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .accept-btn {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+        .accept-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+        }
+
+    .creator-badge {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 10px;
+        border-left: 3px solid #007bff;
+    }
+
+    .header-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 50px 50px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+        .empty-state img {
+            max-width: 300px;
+            opacity: 0.5;
+        }
+</style>
+
+<!-- Header Section -->
+<div class="header-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 mb-2">
+                    <i class="bi bi-briefcase-fill"></i> Browse Available Tasks
+                </h1>
+                <p class="lead mb-0">Find tasks, earn coins, help fellow students! 🚀</p>
+            </div>
+            <div class="col-md-4">
+                <div class="user-balance-card p-4 text-center">
+                    <h6 class="mb-2">👤 @Model.UserName</h6>
+                    <h2 class="mb-0">
+                        <i class="bi bi-coin"></i> @Model.UserCoinBalance
+                    </h2>
+                    <small>Available Coins</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Quick Actions Bar -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="bi bi-list-task"></i> @Model.AvailableTasks.Count Available Tasks
+                    </span>
+                </div>
+                <div>
+                    <a asp-controller="Task" asp-action="Create" class="btn btn-success btn-lg">
+                        <i class="bi bi-plus-circle"></i> Create New Task
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks List -->
+    @if (!Model.AvailableTasks.Any())
+    {
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="mb-4">
+                <i class="bi bi-inbox" style="font-size: 100px; color: #ccc;"></i>
+            </div>
+            <h3 class="text-muted">No Tasks Available Right Now</h3>
+            <p class="text-muted">Be the first to create a task and get help from the community!</p>
+            <a asp-controller="Task" asp-action="Create" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-plus-circle"></i> Create Your First Task
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var task in Model.AvailableTasks)
+            {
+                bool isMyTask = task.CreatedById == Model.currentUserId;
+
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card task-card h-100 @(isMyTask ? "border-secondary" : "")">
+                        <!-- Task Header -->
+                        <div class="card-header bg-white border-0 pt-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title mb-0 flex-grow-1">
+                                    @if (isMyTask)
+                                    {
+                                        <i class="bi bi-person-circle text-secondary"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-file-earmark-text text-primary"></i>
+                                    }
+                                    @task.Title
+                                </h5>
+                                <span class="badge bg-warning text-dark ms-2">@task.Status</span>
+                            </div>
+                        </div>
+
+                        <!-- Task Body -->
+                        <div class="card-body">
+                            <!-- Description -->
+                            <p class="card-text text-muted mb-3" style="min-height: 60px;">
+                                @if (task.Description.Length > 100)
+                                {
+                                    @task.Description.Substring(0, 100)
+                        
+                                    <text>...</text>
+                                }
+                                else
+                                {
+                                    @task.Description
+                                }
+                            </p>
+
+                            <!-- View Details Button -->
+                            <button type="button" class="btn btn-sm btn-outline-primary mb-3 w-100"
+                                    data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId">
+                                <i class="bi bi-eye"></i> View Full Details
+                            </button>
+
+                            <!-- Creator Info -->
+                            <div class="creator-badge mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        <i class="bi bi-person-circle fs-4 text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Posted by</small>
+                                        <strong class="d-block">@task.CreatorName</strong>
+                                    </div>
+                                    @if (isMyTask)
+                                    {
+                                        <span class="badge bg-secondary ms-auto">You</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Reward Section -->
+                            <div class="text-center mb-3 p-3" style="background-color: #f8f9fa; border-radius: 10px;">
+                                <small class="text-muted d-block mb-1">Reward</small>
+                                <div class="coin-badge">
+                                    <i class="bi bi-coin"></i> @task.CoinReward Coins
+                                </div>
+                            </div>
+
+                            <!-- Time Info -->
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-clock"></i> @task.TimeAgo
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Task Footer -->
+                        <div class="card-footer bg-white border-0 pb-3">
+                            @if (isMyTask)
+                            {
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-secondary" disabled>
+                                        <i class="bi bi-lock"></i> Your Task
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <form asp-controller="Task" asp-action="Accept" asp-route-id="@task.TaskId" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <div class="d-grid">
+                                        <button type="submit" class="accept-btn"
+                                                onclick="return confirm('Accept this task for @task.CoinReward coins?')">
+                                            <i class="bi bi-check-circle"></i> Accept Task
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination or Load More (Future Enhancement) -->
+        <div class="row mt-4">
+            <div class="col-md-12 text-center">
+                <p class="text-muted">
+                    Showing all @Model.AvailableTasks.Count tasks
+                </p>
+            </div>
+        </div>
+    }
+
+    <!-- Info Cards -->
+    <div class="row mt-5 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-lightbulb text-warning" style="font-size: 48px;"></i>
+                    <h5 class="mt-3">Need Help?</h5>
+                    <p class="text-muted small">Browse tasks and accept one to start earning coins!</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-star text-warning" style="font-size: 48px;"></i>
+                    <h5 class="mt-3">Build Reputation</h5>
+                    <p class="text-muted small">Complete tasks well to increase your rating!</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-people text-primary" style="font-size: 48px;"></i>
+                    <h5 class="mt-3">Help Community</h5>
+                    <p class="text-muted small">Create tasks to get help from fellow students!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Task Detail Modals -->
+@foreach (var task in Model.AvailableTasks)
+{
+    bool isMyTask = task.CreatedById == Model.currentUserId;
+
+    <div class="modal fade" id="taskModal_@task.TaskId" tabindex="-1" aria-labelledby="taskModalLabel_@task.TaskId" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="taskModalLabel_@task.TaskId">
+                        <i class="bi bi-file-earmark-text"></i> Task Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- Task Title -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h3 class="mb-2">@task.Title</h3>
+                            <span class="badge bg-warning text-dark fs-6">@task.Status</span>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i> Posted @task.TimeAgo
+                        </small>
+                    </div>
+
+                    <!-- Full Description -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">
+                            <i class="bi bi-card-text"></i> Description
+                        </h5>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0" style="white-space: pre-line;">@task.Description</p>
+                        </div>
+                    </div>
+
+                    <!-- Creator Information -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">
+                            <i class="bi bi-person-circle"></i> Posted By
+                        </h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h5 class="mb-1">@task.CreatorName</h5>
+                                        @if (isMyTask)
+                                        {
+                                            <span class="badge bg-secondary">You</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reward Information -->
+                    <div class="mb-4">
+                        <h5 class="mb-3">
+                            <i class="bi bi-coin"></i> Reward
+                        </h5>
+                        <div class="text-center p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px;">
+                            <h1 class="text-white mb-0">
+                                <i class="bi bi-coin"></i> @task.CoinReward Coins
+                            </h1>
+                            <small class="text-white">You will earn this amount upon completion</small>
+                        </div>
+                    </div>
+
+                    <!-- Task Timeline -->
+                    <div class="mb-3">
+                        <h5 class="mb-3">
+                            <i class="bi bi-calendar-event"></i> Timeline
+                        </h5>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <strong>Created:</strong> @task.CreatedAt.ToString("MMMM dd, yyyy 'at' hh:mm tt")
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    @if (isMyTask)
+                    {
+                        <div class="w-100 text-center">
+                            <button type="button" class="btn btn-secondary" disabled>
+                                <i class="bi bi-lock"></i> This is Your Task
+                            </button>
+                            <p class="text-muted small mt-2 mb-0">
+                                You cannot accept your own task. Wait for other students to help you!
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="w-100">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <p class="mb-0 text-muted">
+                                        <i class="bi bi-info-circle"></i> Your balance: <strong>@Model.UserCoinBalance coins</strong>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <form asp-controller="Task" asp-action="Accept" asp-route-id="@task.TaskId" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-success btn-lg"
+                                                onclick="return confirm('Are you sure you want to accept this task for @task.CoinReward coins?')">
+                                            <i class="bi bi-check-circle"></i> Accept This Task
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Include Bootstrap Icons (Add to _Layout.cshtml if not already there) -->
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+}

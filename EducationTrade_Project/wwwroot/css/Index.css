@@ -1,0 +1,32 @@
+﻿/* HERO SECTION */
+.hero-section {
+    background: url('/images/Background.png') center center / cover no-repeat;
+    height: 90vh;
+    position: relative;
+}
+
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* INFO CARDS */
+.info-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+
+/* ABOUT SECTION */
+.about-section p {
+    max-width: 700px;
+    margin: 0 auto;
+}

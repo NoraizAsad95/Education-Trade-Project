@@ -25,4 +25,12 @@
     <ProjectReference Include="..\EducationTrade.Services\EducationTrade.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\logo.png" />
+  </ItemGroup>
+
 </Project>

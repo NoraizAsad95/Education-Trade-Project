@@ -1,8 +1,64 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Education Trade";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-section">
+    <div class="hero-overlay">
+        <div class="container text-center text-white">
+            <h1 class="display-4 fw-bold">Empowering Students Through Skill Exchange</h1>
+            <p class="lead mt-3">
+                A collaborative platform where students help each other,
+                earn virtual coins, and grow together — completely free.
+            </p>
+
+            <div class="mt-4">
+                <a asp-controller="Account" asp-action="Signup" class="btn btn-light btn-lg me-3">
+                    Get Started
+                </a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
+                    Login
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="info-section py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">How Education Trade Works</h2>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h5>📌 Post Tasks</h5>
+                    <p>Request help with assignments, notes, or academic tasks using virtual coins.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h5>🤝 Collaborate</h5>
+                    <p>Students accept tasks and provide quality solutions to earn rewards.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h5>💰 Earn & Grow</h5>
+                    <p>Earn coins by helping others and build your academic reputation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-section py-5 bg-light">
+    <div class="container text-center">
+        <h3 class="fw-bold mb-3">Why Choose Education Trade?</h3>
+        <p class="text-muted">
+            Education Trade is a secure and student-focused platform designed
+            to make academic collaboration simple, fair, and accessible.
+            No real money. No hidden charges. Just students helping students.
+        </p>
+    </div>
+</section>
