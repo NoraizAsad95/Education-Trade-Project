@@ -25,6 +25,7 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Session support
 builder.Services.AddDistributedMemoryCache();

@@ -18,7 +18,7 @@ namespace EducationTrade.Core.Entities
         public string? Course { get; set; }       
         public string? Specialty { get; set; }
 
-        public int CoinBalance { get; set; } = 200;  
+        public int CoinBalance { get; set; } 
 
         public decimal AverageRating { get; set; } = 0;
         public int TotalRatings { get; set; } = 0;
@@ -28,5 +28,10 @@ namespace EducationTrade.Core.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        // ✅ NEW: Email Verification Fields
+        public bool IsEmailVerified { get; set; } = false;
+        public string? EmailVerificationToken { get; set; }
+        public DateTime? EmailVerificationTokenExpiry { get; set; }
     }
 }

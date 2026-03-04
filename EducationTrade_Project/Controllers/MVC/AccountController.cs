@@ -32,9 +32,40 @@ namespace EducationTrade.Presentation.Controllers.MVC
                 ModelState.AddModelError("", result.Error);
                 return View(model);
             }
-            TempData["Success"] = "Registration successful! Please login.";
+            TempData["Success"] = "Registration successful! Please check your email to verify your account.";
             return RedirectToAction("Login");
         }
+
+        [HttpGet]
+        public IActionResult CheckEmail()
+        {
+            return View();
+        }
+
+        
+        [HttpGet]
+        public async Task<IActionResult> VerifyEmail(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                TempData["Error"] = "Invalid verification link";
+                return RedirectToAction("Login");
+            }
+
+            var result = await _authService.VerifyEmailAsync(email, token);
+
+            if (result.IsSuccess)
+            {
+                TempData["Success"] = "Email verified successfully! You received 200 coins. Please login to continue.";
+            }
+            else
+            {
+                TempData["Error"] = result.Error;
+            }
+
+            return RedirectToAction("Login");
+        }
+
         [HttpGet]
         public IActionResult LogIn()
         {

@@ -4,6 +4,7 @@ using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
 
 using EducationTrade.Services.Helpers;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -16,9 +17,13 @@ namespace EducationTrade.Services.Services
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
-        public AuthService(IUserRepository userRepository) 
+        private readonly IEmailService _emailService;
+        private readonly IConfiguration _config;
+        public AuthService(IUserRepository userRepository, IEmailService emailService, IConfiguration config) 
         {
             _userRepository = userRepository;
+            _emailService = emailService;
+            _config = config;
         }
         public async Task<Result> RegisterAsync(RegisterDto dto)
         {
@@ -30,6 +35,7 @@ namespace EducationTrade.Services.Services
             {
                 return Result.Failure("Password length must be 6 characters");
             }
+            var token = Guid.NewGuid().ToString();
             var user = new User
             {
                 Email = dto.Email,
@@ -37,13 +43,19 @@ namespace EducationTrade.Services.Services
                 FullName = dto.FullName,
                 Course = dto.Course,
                 Specialty = dto.Specialty,
-                CoinBalance = 200,
+                CoinBalance = 0,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
+                IsEmailVerified = false,  // Not verified
+                EmailVerificationToken = token,
+                EmailVerificationTokenExpiry = DateTime.Now.AddHours(24)
             };
             var savedUser = await _userRepository.AddAsync(user);
-
-                return Result.Success();
+            // 4. Send verification email
+            var baseUrl = _config["AppSettings:BaseUrl"];
+            var link = $"{baseUrl}/Account/VerifyEmail?token={token}&email={user.Email}";
+            await _emailService.SendVerificationEmailAsync(user.Email, user.FullName, link);
+            return Result.Success();
             //return Result.Success(savedUser.UserId);
 
         }
@@ -58,13 +70,63 @@ namespace EducationTrade.Services.Services
             {
                 return Result<int>.Failure("Invalid email or password");
             }
-            if(!user.IsActive)
+            if (!user.IsEmailVerified)
+            {
+                return Result<int>.Failure("Please verify your email before logging in. Check your inbox for verification link.");
+            }
+            if (!user.IsActive)
             {
                 return Result<int>.Failure("Account is deactivated.");
             }
             return Result<int>.Success(user.UserId);
             //return Result.Success(user.UserId);
 
+        }
+        public async Task<Result> VerifyEmailAsync(string email, string token)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                return Result.Failure("Invalid verification link");
+            }
+
+            if (user.IsEmailVerified)
+            {
+                return Result.Failure("Email already verified. You can login now!");
+            }
+
+            if (user.EmailVerificationToken != token)
+            {
+                return Result.Failure("Invalid verification token");
+            }
+
+            if (user.EmailVerificationTokenExpiry < DateTime.Now)
+            {
+                return Result.Failure("Verification link has expired. Please request a new one.");
+            }
+
+            // Verify email and give initial coins!
+            user.IsEmailVerified = true;
+            user.EmailVerificationToken = null;
+            user.EmailVerificationTokenExpiry = null;
+            user.CoinBalance = 200;  
+            user.UpdatedAt = DateTime.Now;
+
+            await _userRepository.UpdateAsync(user);
+
+            // Send welcome email
+            try
+            {
+                await _emailService.SendWelcomeEmailAsync(user.Email, user.FullName);
+            }
+            catch (Exception ex)
+            {
+                // Welcome email failed but verification succeeded
+                Console.WriteLine($"Welcome email failed: {ex.Message}");
+            }
+
+            return Result.Success();
         }
 
 

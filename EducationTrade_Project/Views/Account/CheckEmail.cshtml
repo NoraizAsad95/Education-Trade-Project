@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Check Your Email";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+
+                    <!-- Icon -->
+                    <div class="mb-4">
+                        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                                    margin: 0 auto; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+                            <i class="bi bi-envelope-check" style="font-size: 4rem; color: white;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="mb-3" style="color: #2d3748; font-weight: 700;">
+                        Check Your Email! 📧
+                    </h2>
+
+                    <!-- Description -->
+                    <p class="lead text-muted mb-4">
+                        We've sent a verification link to your email address.
+                    </p>
+
+                    <!-- Instructions Box -->
+                    <div class="alert alert-info text-start" style="border-left: 4px solid #667eea;">
+                        <h5 class="mb-3">
+                            <i class="bi bi-list-check"></i> Next Steps:
+                        </h5>
+                        <ol class="mb-0" style="line-height: 2;">
+                            <li>📥 Check your inbox (and spam folder)</li>
+                            <li>🔗 Click the verification link in the email</li>
+                            <li>💰 Come back and login to receive your <strong>200 coins</strong>!</li>
+                        </ol>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Tips -->
+                    <div class="text-muted small">
+                        <p class="mb-2">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Didn't receive the email?</strong>
+                        </p>
+                        <ul class="list-unstyled mb-0">
+                            <li>• Check your spam or junk folder</li>
+                            <li>• Make sure you entered the correct email address</li>
+                            <li>• Wait a few minutes and refresh your inbox</li>
+                        </ul>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Actions -->
+                    <div class="d-grid gap-2">
+                        <a asp-action="Login" class="btn btn-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right"></i> Go to Login Page
+                        </a>
+                        <a asp-action="Register" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Registration
+                        </a>
+                    </div>
+
+                    <!-- Footer Note -->
+                    <div class="mt-4 pt-3 border-top">
+                        <p class="text-muted small mb-0">
+                            <i class="bi bi-clock-history"></i>
+                            Verification link expires in <strong>24 hours</strong>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 20px;
+    }
+
+    .alert-info {
+        background-color: #f0f4ff;
+        border-radius: 10px;
+    }
+</style>
