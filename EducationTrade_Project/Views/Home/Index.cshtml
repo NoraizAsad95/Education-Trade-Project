@@ -15,8 +15,11 @@
                 <a asp-controller="Account" asp-action="Signup" class="btn btn-light btn-lg me-3">
                     Get Started
                 </a>
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
-                    Login
+                <a 
+                   data-bs-toggle="modal" data-bs-target="#login-modal"
+                   hx-get="/Account/LoginModal"
+                   hx-target="#modal-content-area" class="btn btn-outline-light btn-lg">
+                     Login
                 </a>
             </div>
         </div>

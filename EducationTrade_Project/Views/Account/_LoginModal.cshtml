@@ -1,0 +1,30 @@
+﻿@model EducationTrade.Core.DTOs.LoginDto
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Log In</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body">
+        <!-- hx-post submits the data. hx-target updates this modal if there are errors -->
+        <form hx-post="/Account/LoginModal" hx-target="#modal-content-area">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</div>

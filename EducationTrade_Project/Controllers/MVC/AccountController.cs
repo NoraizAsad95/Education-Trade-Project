@@ -94,6 +94,40 @@ namespace EducationTrade.Presentation.Controllers.MVC
             //return View("LogIn");
             return RedirectToAction("Index", "Dashboard");
         }
+        // 1. This just sends the empty form HTML to the popup
+        [HttpGet]
+        public IActionResult LoginModal()
+        {
+            return PartialView("_LoginModal", new LoginDto());
+        }
+
+        // 2. This processes the form when the user clicks "Submit"
+        [HttpPost]
+        public async Task<IActionResult> LoginModal(LoginDto model)
+        {
+            // Scenerio A: Form is empty or invalid
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_LoginModal", model); // Send the form back with errors
+            }
+
+            // Scenario B: Wrong email or password
+            var result = await _authService.LoginAsync(model);
+            if (!result.IsSuccess)
+            {
+                ModelState.AddModelError("", result.Error);
+                return PartialView("_LoginModal", model); // Send the form back with errors
+            }
+
+            // Scenario C: Success! Set up the session.
+            HttpContext.Session.SetInt32("UserId", result.Data);
+            // (Add the rest of your session logic here...)
+
+            // Tell HTMX to force the browser to redirect to the Dashboard
+            Response.Headers.Append("HX-Redirect", "/Dashboard/Index");
+            return Ok();
+        }
+
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
