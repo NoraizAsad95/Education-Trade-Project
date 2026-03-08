@@ -141,19 +141,19 @@
                         {
                             <li class="nav-item">
                                 <!-- Inside your navbar -->
-                                <a class="nav-link" href="#"
-                                   data-bs-toggle="modal" data-bs-target="#login-modal"
-                                   hx-get="/Account/LoginModal"
-                                   hx-target="#modal-content-area">
-                                    <i class="bi bi-box-arrow-in-right"></i> Login
-                                </a>
+                               <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#auth-modal" 
+   hx-get="/Account/LoginModal" hx-target="#auth-modal-content-area">
+    <i class="bi bi-box-arrow-in-right"></i> Login
+</a>
 
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Register">
-                                    <i class="bi bi-person-plus"></i> Register
-                                </a>
-                            </li>
+    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#auth-modal" 
+   hx-get="/Account/RegisterModal" hx-target="#auth-modal-content-area">
+    <i class="bi bi-person-plus"></i> Register
+</a>
+</li>
+
                         }
                     </ul>
                 </div>
@@ -183,11 +183,13 @@
         </div> *@
         @RenderBody()
         <!-- We place this at the bottom of _Layout.cshtml -->
-        <div id="login-modal" class="modal fade" tabindex="-1">
-            <div id="modal-content-area" class="modal-dialog modal-dialog-centered">
-                <!-- HTMX will inject the form right here -->
-            </div>
-        </div>
+       <div id="auth-modal" class="modal fade" tabindex="-1">
+    <!-- Use modal-lg if the register form needs more space, otherwise just modal-dialog-centered -->
+    <div id="auth-modal-content-area" class="modal-dialog modal-dialog-centered">
+        <!-- HTMX injects either the Login OR Register partial view here -->
+    </div>
+</div>
+
 
     </main>
 

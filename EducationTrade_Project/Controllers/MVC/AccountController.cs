@@ -35,6 +35,40 @@ namespace EducationTrade.Presentation.Controllers.MVC
             TempData["Success"] = "Registration successful! Please check your email to verify your account.";
             return RedirectToAction("Login");
         }
+        // 1. This sends the empty form HTML to the register popup
+        [HttpGet]
+        public IActionResult RegisterModal()
+        {
+            return PartialView("_RegisterModal", new RegisterDto());
+        }
+
+        // 2. This processes the form when the user clicks "Register"
+        [HttpPost]
+        public async Task<IActionResult> RegisterModal(RegisterDto model)
+        {
+            // Scenario A: Form is empty or invalid
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_RegisterModal", model); // Send the form back with errors
+            }
+
+            // Scenario B: Registration logic (similar to your existing Register action)
+            var result = await _authService.RegisterAsync(model);
+            if (!result.IsSuccess)
+            {
+                ModelState.AddModelError("", result.Error);
+                return PartialView("_RegisterModal", model); // Send the form back with errors
+            }
+
+            // Scenario C: Success! Set a TempData message and redirect to the Login page or Modal.
+            TempData["Success"] = "Registration successful! Please check your email to verify your account.";
+
+            // Tell HTMX to force the browser to redirect to the Home page or Login
+            Response.Headers.Append("HX-Redirect", "/Account/Login");
+
+            return Ok();
+        }
+
 
         [HttpGet]
         public IActionResult CheckEmail()
