@@ -132,6 +132,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" asp-controller="Task" asp-action="MyTasks">
+                                    <i class="bi bi-person-workspace"></i> My Tasks
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Logout">
                                     <i class="bi bi-box-arrow-right"></i> Logout
                                 </a>
@@ -188,6 +194,8 @@
     <div id="auth-modal-content-area" class="modal-dialog modal-dialog-centered">
         <!-- HTMX injects either the Login OR Register partial view here -->
     </div>
+           
+          
 </div>
 
 
@@ -199,6 +207,7 @@
             © 2026 EducationTrade — Built with <i class="bi bi-heart-fill text-danger"></i> using ASP.NET Core
         </div>
     </footer>
+    
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

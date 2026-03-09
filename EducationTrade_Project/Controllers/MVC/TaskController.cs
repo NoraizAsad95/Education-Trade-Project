@@ -162,7 +162,7 @@ namespace EducationTrade.Presentation.Controllers.MVC
             {
                 TempData["Success"] = "Task marked as complete! Coins transferred to accepter.";
             }
-            return RedirectToAction("Index", "Dashboard");
+            return RedirectToAction("MyTasks", "Task");
         }
             // GET: /Task/MyTasks
         public async Task<IActionResult> MyTasks()

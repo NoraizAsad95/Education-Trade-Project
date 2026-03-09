@@ -1,0 +1,144 @@
+﻿@model EducationTrade.Web.ViewModels.MyTasksViewModel
+<!-- Note: Adjust the namespace of MyTasksViewModel above if it differs in your project -->
+@{
+    ViewData["Title"] = "My Tasks";
+}
+
+<div class="container py-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-primary"><i class="bi bi-journal-text"></i> Manage My Tasks</h2>
+            <p class="text-muted">Track the tasks you've created and the tasks you are working on.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="badge bg-success p-2">Coins Earned: @Model.CoinsEarned <i class="bi bi-coin"></i></div>
+            <div class="badge bg-danger p-2">Coins Spent: @Model.CoinsSpent <i class="bi bi-coin"></i></div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs shadow-sm" id="myTaskTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="created-tab" data-bs-toggle="tab" data-bs-target="#created" type="button" role="tab" aria-controls="created" aria-selected="true">
+                Tasks I Created <span class="badge bg-primary rounded-pill">@Model.TotalCreated</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted" type="button" role="tab" aria-controls="accepted" aria-selected="false">
+                Tasks I Accepted <span class="badge bg-secondary rounded-pill">@Model.TotalAccepted</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content border border-top-0 bg-white p-4 shadow-sm rounded-bottom" id="myTaskTabsContent">
+
+        <!-- CREATED TASKS TAB -->
+        <div class="tab-pane fade show active" id="created" role="tabpanel" aria-labelledby="created-tab">
+            @if (!Model.CreatedTasks.Any())
+            {
+                <div class="alert alert-info border-0 shadow-sm"><i class="bi bi-info-circle"></i> You have not created any tasks yet.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var task in Model.CreatedTasks)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm border-0 bg-light">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title fw-bold text-dark mb-0">@task.Title</h5>
+                                        <span class="badge bg-warning text-dark"><i class="bi bi-coin"></i> @task.CoinReward</span>
+                                    </div>
+                                    <p class="card-text text-muted small mb-3">@task.Description</p>
+
+                                    <div class="mb-2 small">
+                                        <strong>Status:</strong>
+                                        @if (task.Status == "Completed")
+                                        {
+                                            <span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> @task.Status</span>
+                                        }
+                                        else if (task.Status == "Accepted")
+                                        {
+
+                                            <span class="text-primary fw-bold"><i class="bi bi-clock-history"></i> @task.Status</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="text-secondary fw-bold">@task.Status</span>
+                                        }
+                                    </div>
+                                    <div class="mb-3 small">
+                                        <strong>Worker:</strong> @task.OtherUserName <span class="text-muted">(Rating: @task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span>
+                                    </div>
+
+                                    <!-- COMPLETE TASK LOGIC -->
+                                    @if (task.CanComplete)
+                                    {
+                                        <form asp-controller="Task" asp-action="CompleteTask" method="post" class="mt-auto">
+                                            <input type="hidden" name="id" value="@task.TaskId" />
+                                            <button type="submit" class="btn btn-success w-100 fw-bold" onclick="return confirm('Are you sure the work has been delivered? Marking this complete will transfer the coins.');">
+                                                <i class="bi bi-check2-all"></i> Mark Complete
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                                <div class="card-footer bg-transparent border-0 text-muted small pb-3">
+                                    Created: @task.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- ACCEPTED TASKS TAB -->
+        <div class="tab-pane fade" id="accepted" role="tabpanel" aria-labelledby="accepted-tab">
+            @if (!Model.AcceptedTasks.Any())
+            {
+                <div class="alert alert-info border-0 shadow-sm"><i class="bi bi-info-circle"></i> You have not accepted any tasks to work on yet.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var task in Model.AcceptedTasks)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 shadow-sm border-0 bg-light">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title fw-bold text-dark mb-0">@task.Title</h5>
+                                        <span class="badge bg-success"><i class="bi bi-coin"></i> @task.CoinReward</span>
+                                    </div>
+                                    <p class="card-text text-muted small mb-3">@task.Description</p>
+
+                                    <div class="mb-2 small">
+                                        <strong>Status:</strong>
+                                        @if (task.Status == "Completed")
+                                        {
+                                            <span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> @task.Status</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="text-primary fw-bold"><i class="bi bi-tools"></i> In Progress</span>
+                                        }
+                                    </div>
+                                    <div class="mb-3 small">
+                                        <strong>Creator:</strong> @task.OtherUserName <span class="text-muted">(Rating: @task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent border-0 text-muted small pb-3">
+                                    Accepted on: @task.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

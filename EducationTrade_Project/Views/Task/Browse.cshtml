@@ -297,7 +297,7 @@ else
                             <span class="text-muted small">Balance: <strong>@Model.UserCoinBalance coins</strong></span>
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                <form asp-controller="Task" asp-action="Accept" asp-route-id="@task.TaskId" method="post" class="d-inline">
+                                <form asp-controller="Task" asp-action="AcceptTask" asp-route-id="@task.TaskId" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn px-4 fw-semibold text-white" style="background:#4f46e5; border-radius:8px;"
                                             onclick="return confirm('Accept this task for @task.CoinReward coins?')">
