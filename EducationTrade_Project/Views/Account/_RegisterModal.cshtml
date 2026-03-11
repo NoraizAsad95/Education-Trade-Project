@@ -8,7 +8,7 @@
 
     <div class="modal-body">
         <!-- hx-post submits the data. hx-target updates this modal if there are errors -->
-        <form hx-post="/Account/RegisterModal" id="registerForm" hx-target="#auth-modal-content-area">
+        <form hx-post="/Account/RegisterModal" id="registerForm" hx-target="#auth-modal-content-area" hx-indicator="#global-loader">
 
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
