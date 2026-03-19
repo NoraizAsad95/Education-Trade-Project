@@ -1,49 +1,63 @@
 @model EducationTrade.Core.DTOs.RegisterDto
 
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title">Create an Account</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
+
+    <!-- Header with top-left Logo -->
+    <div class="modal-header border-bottom-0 pt-4 pb-0 px-4 px-md-5">
+        <img src="~/images/logo.png" alt="EducationTrade" style="height: 36px;" />
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 
-    <div class="modal-body">
-        <!-- hx-post submits the data. hx-target updates this modal if there are errors -->
+    <!-- Main Body -->
+    <div class="modal-body px-4 px-md-5 pt-4 pb-5 text-start">
+        <h3 class="fw-bold text-dark mb-1">Create an account</h3>
+        <p class="text-secondary mb-4">Start your journey with EducationTrade</p>
+
         <form hx-post="/Account/RegisterModal" id="registerForm" hx-target="#auth-modal-content-area" hx-indicator="#global-loader">
+            <div asp-validation-summary="ModelOnly" class="text-danger small fw-medium mb-3"></div>
 
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label fw-medium text-dark small">Full name</label>
+                <input asp-for="FullName" class="form-control form-control-lg bg-light border-light-subtle fs-6" placeholder="Jane Doe" />
+                <span asp-validation-for="FullName" class="text-danger small mt-1 d-block"></span>
+            </div>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-medium text-dark small">Email address</label>
+                <input asp-for="Email" class="form-control form-control-lg bg-light border-light-subtle fs-6" placeholder="name@company.com" />
+                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-medium text-dark small">Password</label>
+                <input asp-for="Password" type="password" class="form-control form-control-lg bg-light border-light-subtle fs-6" placeholder="Create a strong password" />
+                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Course" class="form-label fw-medium text-dark small">Course</label>
+                    <input asp-for="Course" class="form-control form-control-lg bg-light border-light-subtle fs-6" placeholder="e.g. Computer Science" />
+                    <span asp-validation-for="Course" class="text-danger small mt-1 d-block"></span>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label asp-for="Specialty" class="form-label fw-medium text-dark small">Specialty</label>
+                    <input asp-for="Specialty" class="form-control form-control-lg bg-light border-light-subtle fs-6" placeholder="e.g. Programming" />
+                    <span asp-validation-for="Specialty" class="text-danger small mt-1 d-block"></span>
+                </div>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Course"></label>
-        <input asp-for="Course" class="form-control" />
-        <span asp-validation-for="Course" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Specialty"></label>
-        <input asp-for="Specialty" class="form-control" />
-        <span asp-validation-for="Specialty" class="text-danger"></span>
-    </div>
-
-
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+            <button type="submit" class="btn btn-primary w-100 btn-lg fw-medium mt-2 fs-6">Create account</button>
         </form>
     </div>
+
+    <!-- Shaded Footer -->
+    <div class="modal-footer justify-content-center bg-light border-top-0 py-3">
+        <span class="text-secondary small">
+            Already have an account?
+            <!-- This triggers HTMX to load the login modal! -->
+            <a href="#" class="text-primary fw-medium text-decoration-none" hx-get="/Account/LoginModal" hx-target="#auth-modal-content-area">Sign in</a>
+        </span>
+    </div>
+
 </div>

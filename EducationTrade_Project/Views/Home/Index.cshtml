@@ -12,7 +12,9 @@
             </p>
 
             <div class="mt-4">
-                <a asp-controller="Account" asp-action="Signup" class="btn btn-light btn-lg me-3">
+                <a data-bs-toggle="modal" data-bs-target="#auth-modal"
+                   hx-get="/Account/RegisterModal"
+                   hx-target="#auth-modal-content-area" class="btn btn-light btn-lg me-3">
                     Get Started
                 </a>
                 <a 

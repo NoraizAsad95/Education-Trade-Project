@@ -1,31 +1,47 @@
 ﻿@model EducationTrade.Core.DTOs.LoginDto
 
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title">Log In</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
+
+    <!-- Header with top-left Logo -->
+    <div class="modal-header border-bottom-0 pt-4 pb-0 px-4 px-md-5">
+        <img src="~/images/logo.png" alt="EducationTrade" style="height: 36px;" />
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 
-    <div class="modal-body">
-        <!-- hx-post submits the data. hx-target updates this modal if there are errors -->
+    <!-- Main Body -->
+    <div class="modal-body px-4 px-md-5 pt-4 pb-5 text-start">
+        <h3 class="fw-bold text-dark mb-1">Sign in</h3>
+        <p class="text-secondary mb-4">to continue to EducationTrade</p>
+
         <form hx-post="/Account/LoginModal" id="loginForm" hx-target="#auth-modal-content-area" hx-indicator="#global-loader">
+            <div asp-validation-summary="ModelOnly" class="text-danger small fw-medium mb-3"></div>
 
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="mb-3">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label fw-medium text-dark small">Email address</label>
+                <input asp-for="Email" class="form-control form-control-lg bg-light border-light-subtle fs-6" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="mb-4">
+                <div class="d-flex justify-content-between">
+                    <label asp-for="Password" class="form-label fw-medium text-dark small mb-0">Password</label>
+                    <a href="#" class="text-primary text-decoration-none small fw-medium">Forgot password?</a>
+                </div>
+                <input asp-for="Password" type="password" class="form-control form-control-lg bg-light border-light-subtle fs-6 mt-2" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="submit" class="btn btn-primary w-100 btn-lg fw-medium mt-2 fs-6">Sign in</button>
         </form>
     </div>
+
+    <!-- Shaded Footer -->
+    <div class="modal-footer justify-content-center bg-light border-top-0 py-3">
+        <span class="text-secondary small">
+            New to EducationTrade?
+            <!-- This triggers HTMX to load the register modal! -->
+            <a href="#" class="text-primary fw-medium text-decoration-none" hx-get="/Account/RegisterModal" hx-target="#auth-modal-content-area">Create an account</a>
+        </span>
+    </div>
+
 </div>
