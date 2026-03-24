@@ -46,14 +46,14 @@
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card h-100 shadow-sm border-0 bg-light">
-                                <div class="card-body">
+                                <div class="card-body d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h5 class="card-title fw-bold text-dark mb-0">@task.Title</h5>
                                         <span class="badge bg-warning text-dark"><i class="bi bi-coin"></i> @task.CoinReward</span>
                                     </div>
-                                    <p class="card-text text-muted small mb-3">@task.Description</p>
+                                    <p class="card-text text-muted small mb-3 flex-grow-1">@(task.Description.Length > 100 ? task.Description.Substring(0, 100) + "..." : task.Description)</p>
 
-                                    <div class="mb-2 small">
+                                    <div class="mb-3 small">
                                         <strong>Status:</strong>
                                         @if (task.Status == "Completed")
                                         {
@@ -70,20 +70,11 @@
                                             <span class="text-secondary fw-bold">@task.Status</span>
                                         }
                                     </div>
-                                    <div class="mb-3 small">
-                                        <strong>Worker:</strong> @task.OtherUserName <span class="text-muted">(Rating: @task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span>
-                                    </div>
 
-                                    <!-- COMPLETE TASK LOGIC -->
-                                    @if (task.CanComplete)
-                                    {
-                                        <form asp-controller="Task" asp-action="CompleteTask" method="post" class="mt-auto">
-                                            <input type="hidden" name="id" value="@task.TaskId" />
-                                            <button type="submit" class="btn btn-success w-100 fw-bold" onclick="return confirm('Are you sure the work has been delivered? Marking this complete will transfer the coins.');">
-                                                <i class="bi bi-check2-all"></i> Mark Complete
-                                            </button>
-                                        </form>
-                                    }
+                                    <!-- BUTTON TO OPEN THE MODAL -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-auto fw-bold" data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId">
+                                        <i class="bi bi-eye"></i> View Task Details
+                                    </button>
                                 </div>
                                 <div class="card-footer bg-transparent border-0 text-muted small pb-3">
                                     Created: @task.CreatedAt.ToString("MMM dd, yyyy")
@@ -108,14 +99,14 @@
                     {
                         <div class="col-md-6 col-lg-4">
                             <div class="card h-100 shadow-sm border-0 bg-light">
-                                <div class="card-body">
+                                <div class="card-body d-flex flex-column">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h5 class="card-title fw-bold text-dark mb-0">@task.Title</h5>
                                         <span class="badge bg-success"><i class="bi bi-coin"></i> @task.CoinReward</span>
                                     </div>
-                                    <p class="card-text text-muted small mb-3">@task.Description</p>
+                                    <p class="card-text text-muted small mb-3 flex-grow-1">@(task.Description.Length > 100 ? task.Description.Substring(0, 100) + "..." : task.Description)</p>
 
-                                    <div class="mb-2 small">
+                                    <div class="mb-3 small">
                                         <strong>Status:</strong>
                                         @if (task.Status == "Completed")
                                         {
@@ -127,9 +118,11 @@
                                             <span class="text-primary fw-bold"><i class="bi bi-tools"></i> In Progress</span>
                                         }
                                     </div>
-                                    <div class="mb-3 small">
-                                        <strong>Creator:</strong> @task.OtherUserName <span class="text-muted">(Rating: @task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span>
-                                    </div>
+
+                                    <!-- BUTTON TO OPEN THE MODAL -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-auto fw-bold" data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId">
+                                        <i class="bi bi-eye"></i> View Task Details
+                                    </button>
                                 </div>
                                 <div class="card-footer bg-transparent border-0 text-muted small pb-3">
                                     Accepted on: @task.CreatedAt.ToString("MMM dd, yyyy")
@@ -142,3 +135,125 @@
         </div>
     </div>
 </div>
+
+
+<!-- ======================================================= -->
+<!-- MODALS GENERATED AT THE BOTTOM OF THE PAGE              -->
+<!-- ======================================================= -->
+<!-- 1. Modals for CREATED TASKS -->
+@foreach (var task in Model.CreatedTasks)
+{
+    <div class="modal fade" id="taskModal_@task.TaskId" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius:12px; overflow:hidden;">
+
+                <div class="modal-header bg-light d-flex justify-content-between align-items-start border-0">
+                    <div>
+                        <h5 class="fw-bold mb-1">@task.Title</h5>
+                        <span class="badge bg-primary text-white">Reward: @task.CoinReward <i class="bi bi-coin"></i></span>
+                        <span class="badge border border-secondary text-dark ms-1">Status: @task.Status</span>
+                    </div>
+                    <button type="button" class="btn-close mt-1" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Description</h6>
+                    <div class="p-3 rounded bg-light mb-4">
+                        <p class="mb-0 text-dark" style="white-space: pre-line;">@task.Description</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(task.OtherUserName))
+                    {
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Worker Info</h6>
+                            <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8f9fa; border:1px solid #dee2e6;">
+                                <i class="bi bi-person-fill fs-4 text-primary"></i>
+                                <span class="fw-semibold text-dark">@task.OtherUserName <span class="text-muted small">(@task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span></span>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- COMPLETION LOGIC -->
+                    @if (task.CanComplete)
+                    {
+                        <div class="alert alert-warning border-0 shadow-sm mt-4 mb-0">
+                            <h6 class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Complete Task?</h6>
+                            <p class="small mb-3">If <strong>@task.OtherUserName</strong> has delivered the work exactly as you requested, please mark this complete to transfer the coins to them.</p>
+
+                            <form asp-controller="Task" asp-action="CompleteTask" method="post">
+                                <input type="hidden" name="id" value="@task.TaskId" />
+                                <button type="submit" class="btn btn-success w-100 fw-bold"
+                                        onclick="return confirm('Are you sure? This transfers the coins to @task.OtherUserName and marks the task as complete permanently.');">
+                                    <i class="bi bi-check2-all"></i> Mark Task as Complete
+                                </button>
+                            </form>
+                        </div>
+                    }
+                    else if (task.Status == "Completed")
+                    {
+                        <div class="alert alert-success border-0 text-center mb-0">
+                            <i class="bi bi-check-circle-fill fs-4 d-block mb-1"></i>
+                            <strong>Completed!</strong> The work was delivered and coins were transferred successfully.
+                        </div>
+                    }
+                    else if (task.Status == "Pending")
+                    {
+                        <div class="alert alert-secondary border-0 text-center mb-0 mt-3">
+                            <i class="bi bi-hourglass-split fs-4 d-block mb-1"></i>
+                            Waiting for a student to accept this task.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- 2. Modals for ACCEPTED TASKS -->
+@foreach (var task in Model.AcceptedTasks)
+{
+    <div class="modal fade" id="taskModal_@task.TaskId" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius:12px; overflow:hidden;">
+
+                <div class="modal-header bg-light d-flex justify-content-between align-items-start border-0">
+                    <div>
+                        <h5 class="fw-bold mb-1">@task.Title</h5>
+                        <span class="badge bg-success text-white">Earning: @task.CoinReward <i class="bi bi-coin"></i></span>
+                        <span class="badge border border-secondary text-dark ms-1">Status: @task.Status</span>
+                    </div>
+                    <button type="button" class="btn-close mt-1" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Description</h6>
+                    <div class="p-3 rounded bg-light mb-4">
+                        <p class="mb-0 text-dark" style="white-space: pre-line;">@task.Description</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Creator Info</h6>
+                        <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8f9fa; border:1px solid #dee2e6;">
+                            <i class="bi bi-person-fill fs-4 text-primary"></i>
+                            <span class="fw-semibold text-dark">@task.OtherUserName <span class="text-muted small">(@task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span></span>
+                        </div>
+                    </div>
+
+                    @if (task.Status != "Completed")
+                    {
+                        <div class="alert alert-info border-0 text-center mb-0">
+                            <i class="bi bi-info-circle-fill"></i> You are currently working on this task. Once you finish, deliver the work to the creator so they can mark it as complete.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success border-0 text-center mb-0">
+                            <i class="bi bi-check-circle-fill fs-4 d-block mb-1"></i>
+                            <strong>Great Job!</strong> The creator verified your work and the coins have been transferred to your account.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

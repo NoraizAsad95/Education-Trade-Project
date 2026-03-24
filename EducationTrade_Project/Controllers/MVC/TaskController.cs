@@ -164,6 +164,7 @@ namespace EducationTrade.Presentation.Controllers.MVC
             }
             return RedirectToAction("MyTasks", "Task");
         }
+
             // GET: /Task/MyTasks
         public async Task<IActionResult> MyTasks()
         {
@@ -172,7 +173,7 @@ namespace EducationTrade.Presentation.Controllers.MVC
             {
                 return RedirectToAction("Login", "Account");
             }
-
+            
             var createdResult = await _taskService.GetMyCreatedTasksAsync(userId.Value);
             var acceptedResult = await _taskService.GetMyAcceptedTasksAsync(userId.Value);
 
