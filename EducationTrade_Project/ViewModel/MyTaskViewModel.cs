@@ -1,3 +1,4 @@
+using EducationTrade.Presentation.ViewModel;
 using System.Collections.Generic;
 
 namespace EducationTrade.Web.ViewModels
@@ -33,5 +34,6 @@ namespace EducationTrade.Web.ViewModels
         // Actions
         public bool CanComplete { get; set; }
         public bool CanRate { get; set; }
+        public List<TaskMessageViewModel> Messages { get; set; } = new List<TaskMessageViewModel>();
     }
 }

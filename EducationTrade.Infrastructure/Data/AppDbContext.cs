@@ -20,6 +20,8 @@ namespace EducationTrade.Infrastructure.Data
         public DbSet<Core.Entities.Task> Tasks { get; set; }
         public DbSet<CoinTransaction> CoinTransactions { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<TaskMessage> TaskMessages { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +49,20 @@ namespace EducationTrade.Infrastructure.Data
                 entity.HasOne<User>()
                     .WithMany()
                     .HasForeignKey(e => e.ToUserId);
+            });
+            modelBuilder.Entity<Core.Entities.TaskMessage>(entity =>
+            {
+                // Don't cascade delete when the Sender (User) is deleted right now
+                entity.HasOne(m => m.Sender)
+                      .WithMany()
+                      .HasForeignKey(m => m.SenderId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // It's okay to cascade delete messages if the parent Task is deleted
+                entity.HasOne(m => m.Task)
+                      .WithMany()
+                      .HasForeignKey(m => m.TaskId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

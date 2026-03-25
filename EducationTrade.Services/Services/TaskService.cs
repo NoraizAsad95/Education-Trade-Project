@@ -1,4 +1,5 @@
-﻿using EducationTrade.Core.DTOs;
+using EducationTrade.Core.DTOs;
+using EducationTrade.Core.Entities;
 using EducationTrade.Core.Enums;
 using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
@@ -60,9 +61,8 @@ namespace EducationTrade.Services.Services
             {
                 return Result.Failure("Only task creator can mark as complete");
             }
-
             // 3. Validate task status
-            if (task.Status != TaskState.Accepted)
+            if (task.Status != TaskState.Accepted && task.Status != TaskState.PendingReview)
             {
                 return Result.Failure("Task must be accepted before completion");
             }
@@ -136,5 +136,34 @@ namespace EducationTrade.Services.Services
             var tasks = await _taskRepository.GetTasksByCreatorAsync(userId);
             return Result<List<Core.Entities.Task>>.Success(tasks);
         }
+        public async Task<Result> AddMessageAsync(int taskId, int senderId, string text)
+        {
+            var message = new TaskMessage
+            {
+                TaskId = taskId,
+                SenderId = senderId,
+                MessageText = text,
+                CreatedAt = DateTime.Now
+            };
+            await _taskRepository.AddMessageAsync(message);
+            return Result.Success();
+        }
+
+        public async Task<Result> SubmitForReviewAsync(int taskId, int assigneeId)
+        {
+            var task = await _taskRepository.GetByIdAsync(taskId);
+            if (task == null || task.AcceptedById != assigneeId) return Result.Failure("Invalid request");
+
+            task.Status = TaskState.PendingReview;
+            await _taskRepository.UpdateAsync(task);
+            return Result.Success();
+        }
+
+        public async Task<Result<List<TaskMessage>>> GetTaskMessagesAsync(int taskId)
+        {
+            var messages = await _taskRepository.GetMessagesByTaskIdAsync(taskId);
+            return Result<List<TaskMessage>>.Success(messages);
+        }
+
     }
 }

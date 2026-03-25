@@ -59,21 +59,23 @@
                                         {
                                             <span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> @task.Status</span>
                                         }
+                                        else if (task.Status == "PendingReview")
+                                        {
+                                            <span class="text-warning fw-bold"><i class="bi bi-exclamation-circle-fill"></i> Ready for Review</span>
+                                        }
                                         else if (task.Status == "Accepted")
                                         {
-
                                             <span class="text-primary fw-bold"><i class="bi bi-clock-history"></i> @task.Status</span>
                                         }
                                         else
                                         {
-
                                             <span class="text-secondary fw-bold">@task.Status</span>
                                         }
                                     </div>
 
                                     <!-- BUTTON TO OPEN THE MODAL -->
                                     <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-auto fw-bold" data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId">
-                                        <i class="bi bi-eye"></i> View Task Details
+                                        <i class="bi bi-chat-left-text"></i> View Workspace
                                     </button>
                                 </div>
                                 <div class="card-footer bg-transparent border-0 text-muted small pb-3">
@@ -112,16 +114,19 @@
                                         {
                                             <span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> @task.Status</span>
                                         }
+                                        else if (task.Status == "PendingReview")
+                                        {
+                                            <span class="text-warning fw-bold"><i class="bi bi-hourglass-split"></i> Under Review</span>
+                                        }
                                         else
                                         {
-
                                             <span class="text-primary fw-bold"><i class="bi bi-tools"></i> In Progress</span>
                                         }
                                     </div>
 
                                     <!-- BUTTON TO OPEN THE MODAL -->
                                     <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-auto fw-bold" data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId">
-                                        <i class="bi bi-eye"></i> View Task Details
+                                        <i class="bi bi-chat-left-text"></i> View Workspace
                                     </button>
                                 </div>
                                 <div class="card-footer bg-transparent border-0 text-muted small pb-3">
@@ -140,13 +145,14 @@
 <!-- ======================================================= -->
 <!-- MODALS GENERATED AT THE BOTTOM OF THE PAGE              -->
 <!-- ======================================================= -->
-<!-- 1. Modals for CREATED TASKS -->
+<!-- 1. Modals for CREATED TASKS (User is Creator) -->
 @foreach (var task in Model.CreatedTasks)
 {
     <div class="modal fade" id="taskModal_@task.TaskId" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius:12px; overflow:hidden;">
 
+                <!-- Header -->
                 <div class="modal-header bg-light d-flex justify-content-between align-items-start border-0">
                     <div>
                         <h5 class="fw-bold mb-1">@task.Title</h5>
@@ -156,66 +162,122 @@
                     <button type="button" class="btn-close mt-1" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body p-4">
-                    <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Description</h6>
-                    <div class="p-3 rounded bg-light mb-4">
-                        <p class="mb-0 text-dark" style="white-space: pre-line;">@task.Description</p>
-                    </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <!-- LEFT COLUMN: Task Details -->
+                        <div class="col-md-7 p-4 border-end">
+                            <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Description</h6>
+                            <div class="p-3 rounded bg-light mb-4">
+                                <p class="mb-0 text-dark" style="white-space: pre-line;">@task.Description</p>
+                            </div>
 
-                    @if (!string.IsNullOrEmpty(task.OtherUserName))
-                    {
-                        <div class="mb-4">
-                            <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Worker Info</h6>
-                            <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8f9fa; border:1px solid #dee2e6;">
-                                <i class="bi bi-person-fill fs-4 text-primary"></i>
-                                <span class="fw-semibold text-dark">@task.OtherUserName <span class="text-muted small">(@task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span></span>
+                            @if (!string.IsNullOrEmpty(task.OtherUserName))
+                            {
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Worker Info</h6>
+                                    <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8f9fa; border:1px solid #dee2e6;">
+                                        <i class="bi bi-person-fill fs-4 text-primary"></i>
+                                        <span class="fw-semibold text-dark">@task.OtherUserName <span class="text-muted small">(@task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span></span>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (task.Status == "Pending")
+                            {
+                                <div class="alert alert-secondary border-0 text-center mb-0 mt-3">
+                                    <i class="bi bi-hourglass-split fs-4 d-block mb-1"></i>
+                                    Waiting for a student to accept this task.
+                                </div>
+                            }
+                        </div>
+
+                        <!-- RIGHT COLUMN: Chat & Actions -->
+                        <div class="col-md-5 d-flex flex-column" style="background: #f9fafb;">
+
+                            <!-- Chat Feed -->
+                            <div class="p-3 flex-grow-1" style="min-height: 250px; max-height: 400px; overflow-y: auto;">
+                                <h6 class="fw-bold text-muted mb-3"><i class="bi bi-chat-dots"></i> Task Handover Activity</h6>
+                                @if (task.Messages == null || !task.Messages.Any())
+                                {
+                                    <p class="text-muted small text-center mt-4">No activity yet.</p>
+                                }
+                                else
+                                {
+                                    foreach (var msg in task.Messages)
+                                    {
+                                        <div class="mb-3 @(msg.IsMe ? "text-end" : "text-start")">
+                                            <span class="small fw-bold @(msg.IsMe ? "text-primary" : "text-dark")">@(msg.IsMe ? "You" : msg.SenderName)</span>
+                                            <br>
+                                            <div class="p-2 rounded mt-1 shadow-sm @(msg.IsMe ? "bg-primary text-white" : "bg-white border text-dark")" style="display:inline-block; text-align:left; max-width:85%; word-break: break-word;">
+                                                @msg.MessageText
+                                            </div>
+                                            <div class="small text-muted mt-1" style="font-size: 0.7rem;">@msg.TimeAgo</div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            <!-- Input Form -->
+                            @if (task.Status != "Completed" && task.Status != "Pending")
+                            {
+                                <div class="p-3 border-top bg-white">
+                                    <form asp-controller="Task" asp-action="PostMessage" method="post">
+                                        <input type="hidden" name="taskId" value="@task.TaskId" />
+                                        <input type="hidden" name="returnTab" value="created-tab" />
+                                        <div class="input-group dropup">
+                                            <textarea class="form-control" name="messageText" rows="2" placeholder="Type a message..." required style="resize:none; font-size: 0.9rem;"></textarea>
+                                            <button class="btn btn-primary" type="submit"><i class="bi bi-send-fill"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+
+                            <!-- Action Buttons -->
+                            <div class="p-3 border-top bg-light">
+                                @if (task.Status == "PendingReview")
+                                {
+                                    <div class="alert alert-warning border-0 shadow-sm p-3 text-center mb-0">
+                                        <h6 class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Review & Complete</h6>
+                                        <p class="small mb-3">If the work delivered in the chat looks good, complete the task to release coins.</p>
+                                        <form asp-controller="Task" asp-action="CompleteTask" method="post">
+                                            <input type="hidden" name="id" value="@task.TaskId" />
+                                            <button type="submit" class="btn btn-success w-100 fw-bold" onclick="return confirm('Transfer coins to @task.OtherUserName and map task as complete?');">
+                                                <i class="bi bi-check2-all"></i> Accept Work & Pay Coins
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else if (task.Status == "Accepted")
+                                {
+                                    <div class="alert alert-info border-0 text-center mb-0 p-2">
+                                        <i class="bi bi-tools"></i> <strong>Work in Progress!</strong><br />
+                                        <span class="small">Waiting for worker to submit work.</span>
+                                    </div>
+                                }
+                                else if (task.Status == "Completed")
+                                {
+                                    <div class="alert alert-success border-0 text-center mb-0 p-2">
+                                        <i class="bi bi-check-circle-fill"></i> <strong>Completed!</strong><br />
+                                        <span class="small">Coins transferred successfully.</span>
+                                    </div>
+                                }
                             </div>
                         </div>
-                    }
-
-                    <!-- COMPLETION LOGIC -->
-                    @if (task.CanComplete)
-                    {
-                        <div class="alert alert-warning border-0 shadow-sm mt-4 mb-0">
-                            <h6 class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Complete Task?</h6>
-                            <p class="small mb-3">If <strong>@task.OtherUserName</strong> has delivered the work exactly as you requested, please mark this complete to transfer the coins to them.</p>
-
-                            <form asp-controller="Task" asp-action="CompleteTask" method="post">
-                                <input type="hidden" name="id" value="@task.TaskId" />
-                                <button type="submit" class="btn btn-success w-100 fw-bold"
-                                        onclick="return confirm('Are you sure? This transfers the coins to @task.OtherUserName and marks the task as complete permanently.');">
-                                    <i class="bi bi-check2-all"></i> Mark Task as Complete
-                                </button>
-                            </form>
-                        </div>
-                    }
-                    else if (task.Status == "Completed")
-                    {
-                        <div class="alert alert-success border-0 text-center mb-0">
-                            <i class="bi bi-check-circle-fill fs-4 d-block mb-1"></i>
-                            <strong>Completed!</strong> The work was delivered and coins were transferred successfully.
-                        </div>
-                    }
-                    else if (task.Status == "Pending")
-                    {
-                        <div class="alert alert-secondary border-0 text-center mb-0 mt-3">
-                            <i class="bi bi-hourglass-split fs-4 d-block mb-1"></i>
-                            Waiting for a student to accept this task.
-                        </div>
-                    }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 }
 
-<!-- 2. Modals for ACCEPTED TASKS -->
+<!-- 2. Modals for ACCEPTED TASKS (User is Worker) -->
 @foreach (var task in Model.AcceptedTasks)
 {
     <div class="modal fade" id="taskModal_@task.TaskId" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius:12px; overflow:hidden;">
 
+                <!-- Header -->
                 <div class="modal-header bg-light d-flex justify-content-between align-items-start border-0">
                     <div>
                         <h5 class="fw-bold mb-1">@task.Title</h5>
@@ -225,35 +287,120 @@
                     <button type="button" class="btn-close mt-1" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body p-4">
-                    <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Description</h6>
-                    <div class="p-3 rounded bg-light mb-4">
-                        <p class="mb-0 text-dark" style="white-space: pre-line;">@task.Description</p>
-                    </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <!-- LEFT COLUMN: Task Details -->
+                        <div class="col-md-7 p-4 border-end">
+                            <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Description</h6>
+                            <div class="p-3 rounded bg-light mb-4">
+                                <p class="mb-0 text-dark" style="white-space: pre-line;">@task.Description</p>
+                            </div>
 
-                    <div class="mb-4">
-                        <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Creator Info</h6>
-                        <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8f9fa; border:1px solid #dee2e6;">
-                            <i class="bi bi-person-fill fs-4 text-primary"></i>
-                            <span class="fw-semibold text-dark">@task.OtherUserName <span class="text-muted small">(@task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span></span>
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-muted text-uppercase mb-2" style="font-size: 0.8rem;">Creator Info</h6>
+                                <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8f9fa; border:1px solid #dee2e6;">
+                                    <i class="bi bi-person-fill fs-4 text-primary"></i>
+                                    <span class="fw-semibold text-dark">@task.OtherUserName <span class="text-muted small">(@task.OtherUserRating <i class="bi bi-star-fill text-warning"></i>)</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: Chat & Actions -->
+                        <div class="col-md-5 d-flex flex-column" style="background: #f9fafb;">
+
+                            <!-- Chat Feed -->
+                            <div class="p-3 flex-grow-1" style="min-height: 250px; max-height: 400px; overflow-y: auto;">
+                                <h6 class="fw-bold text-muted mb-3"><i class="bi bi-chat-dots"></i> Task Handover Activity</h6>
+                                @if (task.Messages == null || !task.Messages.Any())
+                                {
+                                    <p class="text-muted small text-center mt-4">No activity yet. Share your Google Drive link here.</p>
+                                }
+                                else
+                                {
+                                    foreach (var msg in task.Messages)
+                                    {
+                                        <div class="mb-3 @(msg.IsMe ? "text-end" : "text-start")">
+                                            <span class="small fw-bold @(msg.IsMe ? "text-primary" : "text-dark")">@(msg.IsMe ? "You" : msg.SenderName)</span>
+                                            <br>
+                                            <div class="p-2 rounded mt-1 shadow-sm @(msg.IsMe ? "bg-primary text-white" : "bg-white border text-dark")" style="display:inline-block; text-align:left; max-width:85%; word-break: break-word;">
+                                                @msg.MessageText
+                                            </div>
+                                            <div class="small text-muted mt-1" style="font-size: 0.7rem;">@msg.TimeAgo</div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            <!-- Input Form -->
+                            @if (task.Status != "Completed")
+                            {
+                                <div class="p-3 border-top bg-white">
+                                    <form asp-controller="Task" asp-action="PostMessage" method="post">
+                                        <input type="hidden" name="taskId" value="@task.TaskId" />
+                                        <input type="hidden" name="returnTab" value="accepted-tab" />
+                                        <div class="input-group dropup">
+                                            <textarea class="form-control" name="messageText" rows="2" placeholder="Send Google Drive link or message..." required style="resize:none; font-size: 0.9rem;"></textarea>
+                                            <button class="btn btn-primary" type="submit"><i class="bi bi-send-fill"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+
+                            <!-- Action Buttons -->
+                            <div class="p-3 border-top bg-light">
+                                @if (task.Status == "Accepted")
+                                {
+                                    <form asp-controller="Task" asp-action="DeliverWork" method="post">
+                                        <input type="hidden" name="taskId" value="@task.TaskId" />
+                                        <button type="submit" class="btn btn-warning w-100 fw-bold shadow-sm" onclick="return confirm('Have you dropped the link in the chat? Submit this task for review now?');">
+                                            <i class="bi bi-box-arrow-up-right"></i> Submit Work For Review
+                                        </button>
+                                    </form>
+                                }
+                                else if (task.Status == "PendingReview")
+                                {
+                                    <div class="alert alert-warning border-0 text-center mb-0 p-2">
+                                        <i class="bi bi-hourglass-split"></i> <strong>Under Review</strong><br />
+                                        <span class="small">Waiting for the creator to accept your work.</span>
+                                    </div>
+                                }
+                                else if (task.Status == "Completed")
+                                {
+                                    <div class="alert alert-success border-0 text-center mb-0 p-2">
+                                        <i class="bi bi-check-circle-fill"></i> <strong>Great Job!</strong><br />
+                                        <span class="small">Coins transferred to your account.</span>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-
-                    @if (task.Status != "Completed")
-                    {
-                        <div class="alert alert-info border-0 text-center mb-0">
-                            <i class="bi bi-info-circle-fill"></i> You are currently working on this task. Once you finish, deliver the work to the creator so they can mark it as complete.
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-success border-0 text-center mb-0">
-                            <i class="bi bi-check-circle-fill fs-4 d-block mb-1"></i>
-                            <strong>Great Job!</strong> The creator verified your work and the coins have been transferred to your account.
-                        </div>
-                    }
                 </div>
             </div>
         </div>
     </div>
 }
+
+<script>
+    // This script ensures that when the page reloads after submitting a form, it opens the correct tab
+    document.addEventListener("DOMContentLoaded", function () {
+        var activeTab = '@TempData["ActiveTab"]';
+        if (activeTab) {
+            var tabElement = document.getElementById(activeTab);
+            if(tabElement) {
+               var bsTab = new bootstrap.Tab(tabElement);
+               bsTab.show();
+            }
+        }
+    });
+
+    // Code to Auto-scroll all chat boxes to the bottom when a modal opens
+    var modals = document.querySelectorAll('.modal');
+    modals.forEach(function(modal) {
+        modal.addEventListener('shown.bs.modal', function () {
+            var chatFeed = modal.querySelector('div[style*="overflow-y: auto"]');
+            if(chatFeed) {
+                chatFeed.scrollTop = chatFeed.scrollHeight;
+            }
+        });
+    });
+</script>

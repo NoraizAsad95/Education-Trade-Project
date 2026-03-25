@@ -98,12 +98,24 @@
         <nav class="navbar navbar-expand-lg shadow-sm">
             <div class="container">
                 <!-- Logo + Brand Name -->
-                <a class="navbar-brand fw-bold d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/logo.png"
-                         alt="EducationTrade Logo"
-                         style="height: 40px; margin-right: 10px;"
-                         class="d-inline-block align-top" />
-                    <span>EducationTrade</span>
+                <a class="navbar-brand d-flex align-items-center mb-0" asp-controller="Home" asp-action="Index"
+                   style="text-decoration: none; font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; line-height: 1;">
+
+                    <!-- Keeps your original logo image -->
+                    <img src="~/images/logo.png" alt="EducationTrade Logo" style="height: 48px; margin-right: 12px;" />
+
+                    <!-- Matches the exact typography and color structure from your logo image -->
+                    <div style="display: flex; align-items: center;">
+                        <!-- Brighter Azure/Cerulean Blue for EDUCATION -->
+                        <span style="color: #0D9BD4; font-size: 1.6rem; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase;">
+                            Education
+                        </span>
+
+                        <!-- White text on Charcoal Grey badge for TRADE (Equal size securely set to 1.6rem) -->
+                        <span style="color: #ffffff; background-color: #3D3F44; font-size: 1.6rem; font-weight: 900; padding: 2px 14px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1); letter-spacing: 1px;">
+                            Trade
+                        </span>
+                    </div>
                 </a>
 
                 <button class="navbar-toggler" type="button"

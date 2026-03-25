@@ -1,4 +1,4 @@
-﻿using EducationTrade.Core.DTOs;
+using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Entities;
 using EducationTrade.Core.Interfaces;
 using EducationTrade.Presentation.ViewModel;
@@ -196,6 +196,9 @@ namespace EducationTrade.Presentation.Controllers.MVC
                     otherUserRating = accepter.AverageRating;
                 }
 
+                var messagesResult = await _taskService.GetTaskMessagesAsync(task.TaskId);
+                var messages = messagesResult.IsSuccess ? messagesResult.Data : new List<TaskMessage>();
+
                 viewModel.CreatedTasks.Add(new MyTaskItemViewModel
                 {
                     TaskId = task.TaskId,
@@ -207,7 +210,14 @@ namespace EducationTrade.Presentation.Controllers.MVC
                     OtherUserRating = otherUserRating,
                     CreatedAt = task.CreatedAt,
                     
-                    CanComplete = task.Status.ToString() == "Accepted"
+                    CanComplete = task.Status.ToString() == "Accepted",
+                    Messages = messages.Select(m => new TaskMessageViewModel
+                    {
+                        SenderName = m.Sender.FullName,
+                        MessageText = m.MessageText,
+                        TimeAgo = GetTimeAgo(m.CreatedAt),
+                        IsMe = m.SenderId == userId.Value
+                    }).ToList()
                 });
             }
 
@@ -215,6 +225,9 @@ namespace EducationTrade.Presentation.Controllers.MVC
             foreach (var task in acceptedResult.Data)
             {
                 var creator = await _userRepository.GetByIdAsync(task.CreatedById);
+
+                var messagesResult = await _taskService.GetTaskMessagesAsync(task.TaskId);
+                var messages = messagesResult.IsSuccess ? messagesResult.Data : new List<TaskMessage>();
 
                 viewModel.AcceptedTasks.Add(new MyTaskItemViewModel
                 {
@@ -226,7 +239,13 @@ namespace EducationTrade.Presentation.Controllers.MVC
                     OtherUserName = creator.FullName,
                     OtherUserRating = creator.AverageRating,
                     CreatedAt = task.CreatedAt,
-                   
+                    Messages = messages.Select(m => new TaskMessageViewModel
+                    {
+                        SenderName = m.Sender.FullName,
+                        MessageText = m.MessageText,
+                        TimeAgo = GetTimeAgo(m.CreatedAt),
+                        IsMe = m.SenderId == userId.Value
+                    }).ToList()
                 });
             }
 
@@ -240,6 +259,32 @@ namespace EducationTrade.Presentation.Controllers.MVC
 
             return View(viewModel);
         }
+        [HttpPost]
+        public async Task<IActionResult> PostMessage(int taskId, string messageText, string returnTab)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId != null && !string.IsNullOrWhiteSpace(messageText))
+            {
+                await _taskService.AddMessageAsync(taskId, userId.Value, messageText);
+            }
+            // Return to the page and open the specific tab (Created or Accepted)
+            TempData["ActiveTab"] = returnTab;
+            return RedirectToAction("MyTasks");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeliverWork(int taskId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId != null)
+            {
+                await _taskService.SubmitForReviewAsync(taskId, userId.Value);
+                TempData["Success"] = "Work submitted for review successfully!";
+            }
+            TempData["ActiveTab"] = "accepted-tab";
+            return RedirectToAction("MyTasks");
+        }
+
         private string GetTimeAgo(DateTime dateTime)
         {
             var timeSpan = DateTime.Now - dateTime;
@@ -255,5 +300,6 @@ namespace EducationTrade.Presentation.Controllers.MVC
 
             return dateTime.ToString("MMM dd, yyyy");
         }
+
     }
 }

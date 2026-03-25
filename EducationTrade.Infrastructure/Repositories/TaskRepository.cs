@@ -59,7 +59,22 @@ namespace EducationTrade.Infrastructure.Repositories
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<TaskMessage>> GetMessagesByTaskIdAsync(int taskId)
+        {
+            return await _context.TaskMessages
+                .Include(m => m.Sender)
+                .Where(m => m.TaskId == taskId)
+                .OrderBy(m => m.CreatedAt)
+                .ToListAsync();
+        }
 
-       
+        public async Task<TaskMessage> AddMessageAsync(TaskMessage message)
+        {
+            await _context.TaskMessages.AddAsync(message);
+            await _context.SaveChangesAsync();
+            return message;
+        }
+
+
     }
 }
