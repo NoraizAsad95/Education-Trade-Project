@@ -33,5 +33,7 @@ namespace EducationTrade.Core.Entities
         public bool IsEmailVerified { get; set; } = false;
         public string? EmailVerificationToken { get; set; }
         public DateTime? EmailVerificationTokenExpiry { get; set; }
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpiry { get; set; }
     }
 }

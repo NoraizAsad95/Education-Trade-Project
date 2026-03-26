@@ -67,5 +67,25 @@ namespace EducationTrade.Services.Services
 
             await smtp.SendMailAsync(message); 
         }
+        public async Task SendPasswordResetEmailAsync(string toEmail, string resetLink)
+        {
+            var subject = "Reset Your Education Trade Password";
+
+            // Create a simple, professional HTML email template
+            var body = $@"
+        <h2>Password Reset Request</h2>
+        <p>You recently requested to reset your password for your Education Trade account. Click the button below to set a new password:</p>
+        <br/>
+        <a href='{resetLink}' style='background:#667eea; color:white; padding:10px 20px; text-decoration:none; border-radius: 5px;'>
+            Reset Password
+        </a>
+        <br/><br/>
+        <p>Or copy and paste this link into your browser: <br/> {resetLink}</p>
+        <p style='color: #888; font-size: 12px;'>If you did not request a password reset, please ignore this email. This link will expire in 1 hour.</p>";
+
+            
+            await SendEmail(toEmail, subject, body);
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
+using EducationTrade.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EducationTrade.Presentation.Controllers.MVC
@@ -9,10 +10,12 @@ namespace EducationTrade.Presentation.Controllers.MVC
     {
         private readonly IAuthService _authService;
         private readonly IUserRepository _userRepository;
-        public AccountController(IAuthService authService, IUserRepository userRepository) 
+        private readonly IEmailService _emailService;
+        public AccountController(IAuthService authService, IUserRepository userRepository, IEmailService emailService) 
         {
             _authService = authService;
             _userRepository = userRepository;
+            _emailService = emailService;
         }
         [HttpGet]
         public IActionResult Register()
@@ -167,6 +170,57 @@ namespace EducationTrade.Presentation.Controllers.MVC
             HttpContext.Session.Clear();
             TempData["Success"] = "You have been logged out.";
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model)
+        {
+            if (!ModelState.IsValid) return View(model);
+            var result = await _authService.ForgotPasswordAsync(model);
+
+            if (result.IsSuccess && !string.IsNullOrEmpty(result.Data))
+            {
+                var token = result.Data; 
+                var resetLink = Url.Action("ResetPassword", "Account",
+                    new { email = model.Email, token = token },
+                    protocol: Request.Scheme);
+                await _emailService.SendPasswordResetEmailAsync(model.Email, resetLink);
+            }
+            TempData["Success"] = "If an account with that email exists, we have sent a password reset link.";
+            return RedirectToAction("Login");
+        }
+
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            {
+                TempData["Error"] = "Invalid password reset link.";
+                return RedirectToAction("Login");
+            }
+            var model = new ResetPasswordDto { Email = email, Token = token };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            var result = await _authService.ResetPasswordAsync(model);
+
+            if (!result.IsSuccess)
+            {
+                ModelState.AddModelError("", result.Error);
+                return View(model);
+            }
+            TempData["Success"] = "Your password has been reset successfully. Please log in.";
+            return RedirectToAction("Login");
         }
     }
 }

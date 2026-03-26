@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +13,7 @@ namespace EducationTrade.Core.Interfaces
         Task<Result> RegisterAsync(RegisterDto dto);
         Task<Result<int>> LoginAsync(LoginDto dto);
         Task<Result> VerifyEmailAsync(string email, string token);
+        Task<Result<string>> ForgotPasswordAsync(ForgotPasswordDto dto);
+        Task<Result> ResetPasswordAsync(ResetPasswordDto dto);
     }
 }

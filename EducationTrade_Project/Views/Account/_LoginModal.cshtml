@@ -25,7 +25,9 @@
             <div class="mb-4">
                 <div class="d-flex justify-content-between">
                     <label asp-for="Password" class="form-label fw-medium text-dark small mb-0">Password</label>
-                    <a href="#" class="text-primary text-decoration-none small fw-medium">Forgot password?</a>
+                    <a asp-controller="Account" asp-action="ForgotPassword" class="text-decoration-none">
+                        Forgot Password?
+                    </a>
                 </div>
                 <input asp-for="Password" type="password" class="form-control form-control-lg bg-light border-light-subtle fs-6 mt-2" placeholder="Enter your password" />
                 <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>

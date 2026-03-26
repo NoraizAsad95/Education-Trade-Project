@@ -1,4 +1,4 @@
-﻿using EducationTrade.Core.DTOs;
+using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Entities;
 using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
@@ -126,6 +126,41 @@ namespace EducationTrade.Services.Services
                 Console.WriteLine($"Welcome email failed: {ex.Message}");
             }
 
+            return Result.Success();
+        }
+        public async Task<Result<string>> ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+            var user = await _userRepository.GetByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                return Result<string>.Success(string.Empty);
+            }
+            
+            var token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+            user.PasswordResetToken = token;
+            user.PasswordResetTokenExpiry = DateTime.Now.AddHours(1);
+            await _userRepository.UpdateAsync(user);
+            
+            return Result<string>.Success(token);
+        }
+        public async Task<Result> ResetPasswordAsync(ResetPasswordDto dto)
+        {
+            var user = await _userRepository.GetByEmailAsync(dto.Email);
+
+            if (user == null ||
+                user.PasswordResetToken != dto.Token ||
+                user.PasswordResetTokenExpiry == null ||
+                user.PasswordResetTokenExpiry < DateTime.Now)
+            {
+                return Result.Failure("Invalid or expired reset token.");
+            }
+            
+            user.Password = PasswordHasher.HashPassword(dto.NewPassword);
+
+            // Clear the token so it can't be reused
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpiry = null;
+            await _userRepository.UpdateAsync(user);
             return Result.Success();
         }
 

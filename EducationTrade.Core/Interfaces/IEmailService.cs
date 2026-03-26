@@ -11,6 +11,8 @@ namespace EducationTrade.Core.Interfaces
     {
         Task SendVerificationEmailAsync(string toEmail, string userName, string verificationLink);
         Task SendWelcomeEmailAsync(string toEmail, string userName);
+        Task SendPasswordResetEmailAsync(string toEmail, string resetLink);
+
     }
 
 }
