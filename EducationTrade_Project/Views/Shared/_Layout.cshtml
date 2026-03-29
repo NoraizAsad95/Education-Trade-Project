@@ -63,6 +63,37 @@
         body {
             background-color: #f4f6f9;
         }
+            /* Login Button: Outline by default, fills with blue on hover */
+    .btn-brand-login {
+        color: #0D9BD4;
+        border: 2px solid #0D9BD4;
+        background-color: transparent;
+        border-radius: 6px;
+        padding: 6px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-brand-login:hover {
+        background-color: #0D9BD4;
+        color: #ffffff;
+    }
+
+    /* Register Button: Filled by default, turns to outline on hover */
+    .btn-brand-register {
+        background-color: #3D3F44;
+        color: #ffffff;
+        border: 2px solid #3D3F44;
+        border-radius: 6px;
+        padding: 6px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .btn-brand-register:hover {
+        background-color: transparent;
+        color: #3D3F44;
+        box-shadow: none;
+    }
 
         .navbar {
             background: linear-gradient(90deg, #ffffff, #f8f9fa);
@@ -157,20 +188,21 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <!-- Inside your navbar -->
-                               <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#auth-modal" 
-   hx-get="/Account/LoginModal" hx-target="#auth-modal-content-area">
-    <i class="bi bi-box-arrow-in-right"></i> Login
-</a>
-
-                            </li>
-                            <li class="nav-item">
-    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#auth-modal" 
-   hx-get="/Account/RegisterModal" hx-target="#auth-modal-content-area">
-    <i class="bi bi-person-plus"></i> Register
-</a>
+                            <li class="nav-item ms-2">
+    <a class="btn btn-brand-login" href="#" data-bs-toggle="modal" data-bs-target="#auth-modal" 
+       hx-get="/Account/LoginModal" hx-target="#auth-modal-content-area">
+        Login
+    </a>
 </li>
+
+<li class="nav-item ms-3">
+    <a class="btn btn-brand-register" href="#" data-bs-toggle="modal" data-bs-target="#auth-modal" 
+       hx-get="/Account/RegisterModal" hx-target="#auth-modal-content-area">
+        Register
+    </a>
+</li>
+
+
 
                         }
                     </ul>
