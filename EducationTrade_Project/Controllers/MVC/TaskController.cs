@@ -259,6 +259,45 @@ namespace EducationTrade.Presentation.Controllers.MVC
 
             return View(viewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelTask(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("LogIn", "Account");
+
+            var result = await _taskService.CancelTaskAsync(id, userId.Value);
+            if (!result.IsSuccess)
+            {
+                TempData["Error"] = result.Error;
+            }
+            else
+            {
+                TempData["Success"] = "Task cancelled successfully! Coins have been refunded to your wallet.";
+            }
+
+            return RedirectToAction("MyTasks");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DropTask(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("LogIn", "Account");
+
+            var result = await _taskService.DropTaskAsync(id, userId.Value);
+            if (!result.IsSuccess)
+            {
+                TempData["Error"] = result.Error;
+            }
+            else
+            {
+                TempData["Success"] = "You have dropped the task. It is now available for others.";
+            }
+
+            return RedirectToAction("MyTasks");
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostMessage(int taskId, string messageText, string returnTab)
         {

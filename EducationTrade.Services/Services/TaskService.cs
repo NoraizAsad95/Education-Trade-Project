@@ -136,6 +136,48 @@ namespace EducationTrade.Services.Services
             var tasks = await _taskRepository.GetTasksByCreatorAsync(userId);
             return Result<List<Core.Entities.Task>>.Success(tasks);
         }
+        public async Task<Result> CancelTaskAsync(int taskId, int creatorId)
+        {
+            var task = await _taskRepository.GetByIdAsync(taskId);
+            if (task == null) return Result.Failure("Task not found");
+
+            // Security Check: Only the Creator can cancel the task
+            if (task.CreatedById != creatorId) return Result.Failure("Only the task creator can cancel this task");
+
+            // Status Check: You can only cancel a task if it hasn't been accepted yet
+            if (task.Status != TaskState.Pending) return Result.Failure("You cannot cancel a task that is already accepted or completed.");
+
+            // Refund the Coins back to the Creator
+            var creator = await _userRepository.GetByIdAsync(creatorId);
+            creator.CoinBalance += task.CoinReward;
+            await _userRepository.UpdateAsync(creator);
+
+            // Update the Task Status
+            task.Status = TaskState.Cancelled;
+            await _taskRepository.UpdateAsync(task);
+
+            return Result.Success();
+        }
+        public async Task<Result> DropTaskAsync(int taskId, int assigneeId)
+        {
+            var task = await _taskRepository.GetByIdAsync(taskId);
+            if (task == null) return Result.Failure("Task not found");
+
+            
+            if (task.AcceptedById != assigneeId) return Result.Failure("Only the assigned worker can drop this task");
+
+            
+            if (task.Status != TaskState.Accepted) return Result.Failure("Task is not in an active working state");
+
+            
+            task.AcceptedById = null;
+            task.Status = TaskState.Pending;
+            await _taskRepository.UpdateAsync(task);
+
+            return Result.Success();
+        }
+
+
         public async Task<Result> AddMessageAsync(int taskId, int senderId, string text)
         {
             var message = new TaskMessage

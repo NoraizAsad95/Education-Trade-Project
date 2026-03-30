@@ -17,6 +17,9 @@ namespace EducationTrade.Core.Interfaces
         Task<Result<List<Core.Entities.Task>>> GetAvailableTaskAsync();
         Task<Result<List<Core.Entities.Task>>> GetMyCreatedTasksAsync(int userId);
         Task<Result<List<Core.Entities.Task>>> GetMyAcceptedTasksAsync(int userId);
+        Task<Result> CancelTaskAsync(int taskId, int creatorId);
+        Task<Result> DropTaskAsync(int taskId, int assigneeId);
+
         Task<Result> AddMessageAsync(int taskId, int senderId, string text);
         Task<Result> SubmitForReviewAsync(int taskId, int assigneeId);
         Task<Result<List<TaskMessage>>> GetTaskMessagesAsync(int taskId);
