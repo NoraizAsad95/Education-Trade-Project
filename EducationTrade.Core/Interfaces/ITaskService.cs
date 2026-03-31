@@ -22,6 +22,7 @@ namespace EducationTrade.Core.Interfaces
 
         Task<Result> AddMessageAsync(int taskId, int senderId, string text);
         Task<Result> SubmitForReviewAsync(int taskId, int assigneeId);
+        Task<Result> RequestRevisionAsync(int taskId, int creatorId);
         Task<Result<List<TaskMessage>>> GetTaskMessagesAsync(int taskId);
     }
 }

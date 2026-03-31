@@ -201,6 +201,30 @@ namespace EducationTrade.Services.Services
             return Result.Success();
         }
 
+        public async Task<Result> RequestRevisionAsync(int taskId, int creatorId)
+        {
+            var task = await _taskRepository.GetByIdAsync(taskId);
+
+            if(task == null || task.CreatedById != creatorId) return Result.Failure("Invalid request");
+
+            if (task.Status != TaskState.PendingReview) return Result.Failure("Task is not under review");
+
+            task.Status = TaskState.Accepted;
+            await _taskRepository.UpdateAsync(task);
+
+            var systemMessage = new TaskMessage
+            {
+                TaskId = taskId,
+                SenderId = creatorId,
+                CreatedAt = DateTime.Now,
+                MessageText = "SYSTEM:  The Creator has requested revisions. Please check the chat and resubmit your work."
+            };
+            await _taskRepository.AddMessageAsync(systemMessage);
+
+            return Result.Success();
+
+        }
+
         public async Task<Result<List<TaskMessage>>> GetTaskMessagesAsync(int taskId)
         {
             var messages = await _taskRepository.GetMessagesByTaskIdAsync(taskId);

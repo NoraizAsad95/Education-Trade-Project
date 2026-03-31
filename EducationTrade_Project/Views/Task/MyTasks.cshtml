@@ -1,5 +1,5 @@
 ﻿@model EducationTrade.Web.ViewModels.MyTasksViewModel
-<!-- Note: Adjust the namespace of MyTasksViewModel above if it differs in your project -->
+
 @{
     ViewData["Title"] = "My Tasks";
 }
@@ -295,17 +295,32 @@
                                 }
                                 else
                                 {
-                                    foreach (var msg in task.Messages)
+                                    @foreach (var msg in task.Messages)
                                     {
-                                        <div class="mb-3 @(msg.IsMe ? "text-end" : "text-start")">
-                                            <span class="small fw-bold @(msg.IsMe ? "text-primary" : "text-dark")">@(msg.IsMe ? "You" : msg.SenderName)</span>
-                                            <br>
-                                            <div class="p-2 rounded mt-1 shadow-sm @(msg.IsMe ? "bg-primary text-white" : "bg-white border text-dark")" style="display:inline-block; text-align:left; max-width:85%; word-break: break-word;">
-                                                @msg.MessageText
+                                        @if (msg.MessageText.StartsWith("SYSTEM:"))
+                                        {
+                                            <!-- Display as a neutral System Event in the center -->
+                                            <div class="text-center my-3">
+                                                <span class="badge bg-secondary rounded-pill py-2 px-3 shadow-sm text-wrap" style="max-width: 90%; font-weight: normal;">
+                                                    <i class="bi bi-info-circle me-1"></i> @msg.MessageText.Replace("SYSTEM:", "")
+                                                </span>
+                                                <div class="small text-muted mt-1" style="font-size: 0.65rem;">@msg.TimeAgo</div>
                                             </div>
-                                            <div class="small text-muted mt-1" style="font-size: 0.7rem;">@msg.TimeAgo</div>
-                                        </div>
+                                        }
+                                        else
+                                        {
+                                            <!-- Display as a normal chat bubble -->
+                                            <div class="mb-3 @(msg.IsMe ? "text-end" : "text-start")">
+                                                <span class="small fw-bold @(msg.IsMe ? "text-primary" : "text-dark")">@(msg.IsMe ? "You" : msg.SenderName)</span>
+                                                <br>
+                                                <div class="p-2 rounded mt-1 shadow-sm @(msg.IsMe ? "bg-primary text-white" : "bg-white border text-dark")" style="display:inline-block; text-align:left; max-width:85%; word-break: break-word;">
+                                                    @msg.MessageText
+                                                </div>
+                                                <div class="small text-muted mt-1" style="font-size: 0.7rem;">@msg.TimeAgo</div>
+                                            </div>
+                                        }
                                     }
+
                                 }
                             </div>
 
@@ -337,6 +352,14 @@
                                                 <i class="bi bi-check2-all"></i> Accept Work & Pay Coins
                                             </button>
                                         </form>
+                                        <div class=""></div>
+                                        <form asp-controller="Task" asp-action="RequestRevision" method="post" class="mt-2">
+                                            <input type="hidden" name="id" value="@task.TaskId" />
+                                            <button type="submit" class="btn btn-warning w-100 fw-bold" onclick="return confirm('Send the work back to the student for changes?');">
+                                                <i class="bi bi-arrow-counterclockwise"></i> Request Changes
+                                            </button>
+                                        </form>
+
                                     </div>
                                 }
                                 else if (task.Status == "Accepted")
@@ -409,17 +432,32 @@
                                 }
                                 else
                                 {
-                                    foreach (var msg in task.Messages)
+                                    @foreach (var msg in task.Messages)
                                     {
-                                        <div class="mb-3 @(msg.IsMe ? "text-end" : "text-start")">
-                                            <span class="small fw-bold @(msg.IsMe ? "text-primary" : "text-dark")">@(msg.IsMe ? "You" : msg.SenderName)</span>
-                                            <br>
-                                            <div class="p-2 rounded mt-1 shadow-sm @(msg.IsMe ? "bg-primary text-white" : "bg-white border text-dark")" style="display:inline-block; text-align:left; max-width:85%; word-break: break-word;">
-                                                @msg.MessageText
+                                        @if (msg.MessageText.StartsWith("SYSTEM:"))
+                                        {
+                                            <!-- System Message -->
+                                            <div class="text-center my-3">
+                                                <span class="badge bg-secondary rounded-pill py-2 px-3 shadow-sm text-wrap" style="max-width: 90%; font-weight: normal;">
+                                                    <i class="bi bi-info-circle me-1"></i> @msg.MessageText.Replace("SYSTEM:", "")
+                                                </span>
+                                                <div class="small text-muted mt-1" style="font-size: 0.65rem;">@msg.TimeAgo</div>
                                             </div>
-                                            <div class="small text-muted mt-1" style="font-size: 0.7rem;">@msg.TimeAgo</div>
-                                        </div>
+                                        }
+                                        else
+                                        {
+                                            <!-- Normal Message -->
+                                            <div class="mb-3 @(msg.IsMe ? "text-end" : "text-start")">
+                                                <span class="small fw-bold @(msg.IsMe ? "text-primary" : "text-dark")">@(msg.IsMe ? "You" : msg.SenderName)</span>
+                                                <br>
+                                                <div class="p-2 rounded mt-1 shadow-sm @(msg.IsMe ? "bg-primary text-white" : "bg-white border text-dark")" style="display:inline-block; text-align:left; max-width:85%; word-break: break-word;">
+                                                    @msg.MessageText
+                                                </div>
+                                                <div class="small text-muted mt-1" style="font-size: 0.7rem;">@msg.TimeAgo</div>
+                                            </div>
+                                        }
                                     }
+
                                 }
                             </div>
 

@@ -324,6 +324,26 @@ namespace EducationTrade.Presentation.Controllers.MVC
             return RedirectToAction("MyTasks");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RequestRevision(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("LogIn", "Account");
+
+            var result = await _taskService.RequestRevisionAsync(id, userId.Value);
+            if (!result.IsSuccess)
+            {
+                TempData["Error"] = result.Error;
+            }
+            else
+            {
+                TempData["Success"] = "You have requested a revision from the worker.";
+            }
+
+            return RedirectToAction("MyTasks");
+        }
+
+
         private string GetTimeAgo(DateTime dateTime)
         {
             var timeSpan = DateTime.Now - dateTime;
