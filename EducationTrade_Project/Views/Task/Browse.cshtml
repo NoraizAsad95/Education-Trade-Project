@@ -5,38 +5,46 @@
 }
 
 <style>
+    
     .page-header {
-        background: linear-gradient(135deg, #0D9BD4 100%);
+        background: linear-gradient(135deg, #0D9BD4 0%, #118abf 100%);
         border-radius: 14px;
         padding: 32px 36px;
         margin-bottom: 32px;
         color: white;
+        box-shadow: 0 10px 25px rgba(13, 155, 212, 0.3); 
     }
 
+   
     .coin-pill {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 10px;
-        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        padding: 12px 20px;
+        backdrop-filter: blur(5px);
     }
 
+    
     .btn-new-task {
         background: white;
-        color: #4f46e5;
+        color: #0D9BD4 !important; 
         font-weight: 600;
         border: none;
         border-radius: 8px;
         padding: 10px 22px;
         text-decoration: none;
         transition: background 0.2s, transform 0.1s;
-        display: inline-block;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
 
-    .btn-new-task:hover {
-        background: #f0f0ff;
-        color: #4338ca;
-        transform: translateY(-1px);
-    }
+        .btn-new-task:hover {
+            background: #f8f9fa;
+            color: #118abf !important;
+            transform: translateY(-2px);
+        }
+
 
     .task-card {
         border: 2px solid #e0e7ff;
@@ -111,26 +119,38 @@
 </style>
 
 <!-- Header -->
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h2 class="fw-bold mb-1" style="font-size: 1.8rem;">🎯 Browse Tasks</h2>
-            <p class="mb-0 opacity-75 small">Find tasks, earn coins, and help fellow students.</p>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-            <div class="coin-pill d-flex align-items-center gap-2">
-                <i class="bi bi-coin fs-5" style="color: #34d399;"></i>
-                <div>
-                    <div style="font-size: 0.7rem; opacity: 0.8; line-height: 1;">@Model.UserName</div>
-                    <div class="fw-bold" style="font-size: 0.95rem;">@Model.UserCoinBalance coins</div>
-                </div>
+
+<div class="container py-4">
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+               
+                <h2 class="fw-bold mb-1" style="font-size: 2rem; letter-spacing: -0.5px;">🎯 Browse Tasks</h2>
+                
+                <p class="mb-0 opacity-75" style="font-size: 1.05rem;">Find tasks, earn coins, and help fellow students.</p>
             </div>
-            <a asp-controller="Task" asp-action="CreateTask" class="btn-new-task">
-                <i class="bi bi-plus-lg me-1"></i> New Task
-            </a>
+
+            <div class="d-flex align-items-center gap-3">
+                
+                <div class="coin-pill d-flex align-items-center gap-2">
+                   
+                    <div class="bg-white rounded-circle d-flex justify-content-center align-items-center" style="width: 38px; height: 38px;">
+                        <i class="bi bi-coin fs-5" style="color: #34d399;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;">@Model.UserName</div>
+                        <div class="fw-bold" style="font-size: 1.1rem;">@Model.UserCoinBalance Coins</div>
+                    </div>
+                </div>
+
+                <a asp-controller="Task" asp-action="CreateTask" class="btn-new-task">
+                    <i class="bi bi-plus-circle-fill me-2 fs-5"></i> New Task
+                </a>
+            </div>
         </div>
     </div>
 </div>
+
 
 <div class="d-flex align-items-center mb-3">
     <span class="badge rounded-pill px-3 py-2" style="background:#ede9fe; color:#4f46e5; font-size:0.8rem;">
