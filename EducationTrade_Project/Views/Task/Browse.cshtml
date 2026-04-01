@@ -45,6 +45,17 @@
             transform: translateY(-2px);
         }
 
+    /* The ultra-simple, horizontal list box */
+    .task-list-row {
+        background: #ffffff;
+        border: 1px solid #e2e8f0; /* Soft grey default */
+        border-radius: 8px; /* Slightly sharper corners for a professional software look */
+        transition: border-color 0.2s ease;
+    }
+        /* Only change the border color to your sleek Charcoal Grey, absolutely no movement */
+        .task-list-row:hover {
+            border-color: #3D3F44;
+        }
 
     .task-card {
         border: 2px solid #e0e7ff;
@@ -149,98 +160,89 @@
             </div>
         </div>
     </div>
-</div>
+
 
 
 <div class="d-flex align-items-center mb-3">
-    <span class="badge rounded-pill px-3 py-2" style="background:#ede9fe; color:#4f46e5; font-size:0.8rem;">
+    <span class="badge rounded-pill px-3 py-2 fw-semibold" style="background-color: rgba(13, 155, 212, 0.1); color: #0D9BD4; font-size: 0.85rem;">
         <i class="bi bi-list-task me-1"></i> @Model.AvailableTasks.Count task@(Model.AvailableTasks.Count == 1 ? "" : "s") available
     </span>
 </div>
-
 <!-- Tasks Grid -->
 @if (!Model.AvailableTasks.Any())
 {
-    <div class="text-center py-5 my-5">
-        <i class="bi bi-inbox" style="font-size: 64px; color:#c7d2fe;"></i>
-        <h5 class="mt-3 fw-semibold text-muted">No tasks available right now</h5>
-        <p class="text-muted small mb-4">Be the first to post a task and get help from the community.</p>
-        <a asp-controller="Task" asp-action="CreateTask" class="btn px-4 py-2 text-white fw-semibold" style="background:#4f46e5; border-radius:8px;">Create a Task</a>
+    <!-- Updated Empty State matching your custom blue and grey -->
+    <div class="text-start py-5 my-4 border rounded p-5 bg-white" style="border-color: #e2e8f0 !important;">
+        <i class="bi bi-inbox text-brand-grey" style="font-size: 48px; opacity: 0.6;"></i>
+        <h5 class="mt-3 fw-bold text-brand-grey">No tasks available right now</h5>
+        <p class="text-muted small mb-4" style="max-width: 400px;">There are no active tasks waiting to be completely. Be the first to post a task and get help from the community!</p>
+        <a asp-controller="Task" asp-action="CreateTask" class="btn px-4 py-2 text-white fw-semibold" style="background-color: #0D9BD4; border-radius: 6px;">
+            <i class="bi bi-plus-lg me-1"></i> Create a Task
+        </a>
     </div>
 }
 else
 {
-    <div class="row g-4 px-1">
+    <!-- Notice we removed 'mx-auto' and max-width. It now flows naturally from the left. -->
+    <div class="d-flex flex-column gap-3 w-100">
         @foreach (var task in Model.AvailableTasks)
         {
             bool isMyTask = task.CreatedById == Model.currentUserId;
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card task-card h-100 @(isMyTask ? "is-my-task" : "")">
-                    <div class="card-body p-4 d-flex flex-column">
+            <div class="task-list-row p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
-                        <!-- Title & Status -->
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-semibold mb-0 me-2" style="line-height: 1.4; color: #1e1b4b;">@task.Title</h6>
-                            <span class="badge text-dark flex-shrink-0" style="background:#d1fae5; border:1px solid #6ee7b7; color:#065f46 !important; font-size:0.7rem;">@task.Status</span>
-                        </div>
+                <!-- LEFT SIDE: Info -->
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2 gap-2">
+                        <h5 class="fw-bold mb-0 text-brand-grey" style="font-size: 1.15rem;">@task.Title</h5>
 
-                        <!-- Description -->
-                        <p class="text-muted small mb-3" style="flex-grow: 1; min-height: 48px;">
-                            @(task.Description.Length > 100 ? task.Description.Substring(0, 100) + "…" : task.Description)
-                        </p>
+                        @if (isMyTask)
+                        {
+                            <span class="badge bg-light text-muted border border-secondary">Your Task</span>
+                        }
+                    </div>
 
-                        <!-- Meta -->
-                        <div class="d-flex justify-content-between align-items-center mb-3 pt-2 border-top">
-                            <div class="small text-muted">
-                                <i class="bi bi-person-circle me-1" style="color:#818cf8;"></i>
-                                @task.CreatorName
-                                @if (isMyTask)
-                                {
-                                    <span class="badge bg-secondary ms-1" style="font-size:0.62rem;">You</span>
-                                }
-                            </div>
-                            <div class="small text-muted">
-                                <i class="bi bi-clock me-1"></i>@task.TimeAgo
-                            </div>
-                        </div>
+                    <p class="text-muted mb-2" style="font-size: 0.95rem;">
+                        @(task.Description.Length > 150 ? task.Description.Substring(0, 150) + "..." : task.Description)
+                    </p>
 
-                        <!-- Reward & Actions -->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="reward-badge">
-                                <i class="bi bi-coin me-1"></i>@task.CoinReward coins
-                            </span>
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-sm btn-outline-primary"
-                                        data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId"
-                                        style="border-radius:7px; font-size:0.82rem;">
-                                    Details
+                    <div class="d-flex gap-4 small text-muted">
+                        <span><i class="bi bi-person me-1" style="color: #0D9BD4;"></i> @task.CreatorName</span>
+                        <span><i class="bi bi-clock me-1"></i> @task.TimeAgo</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: Rewards & Actions -->
+                <div class="d-flex flex-md-column align-items-md-end align-items-center justify-content-between gap-2 mt-3 mt-md-0" style="min-width: 150px;">
+
+                    <div class="fw-bold fs-5 text-success">
+                        <i class="bi bi-coin"></i> @task.CoinReward <span class="fs-6 fw-normal text-muted">Coins</span>
+                    </div>
+
+                    <div class="d-flex gap-2 w-100 justify-content-end mt-1">
+                        <button type="button" class="btn btn-sm btn-light border fw-bold text-brand-grey"
+                                data-bs-toggle="modal" data-bs-target="#taskModal_@task.TaskId">
+                            Details
+                        </button>
+
+                        @if (!isMyTask)
+                        {
+                            <form asp-controller="Task" asp-action="Accept" asp-route-id="@task.TaskId" method="post" class="m-0">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm fw-bold text-white px-3"
+                                        style="background-color: #0D9BD4;"
+                                        onclick="return confirm('Accept this task for @task.CoinReward coins?')">
+                                    Accept
                                 </button>
-                                @if (!isMyTask)
-                                {
-                                    <form asp-controller="Task" asp-action="Accept" asp-route-id="@task.TaskId" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="accept-btn"
-                                                onclick="return confirm('Accept this task for @task.CoinReward coins?')">
-                                            Accept
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-sm btn-outline-secondary" style="border-radius:7px; font-size:0.82rem;" disabled>Your Task</button>
-                                }
-                            </div>
-                        </div>
-
+                            </form>
+                        }
                     </div>
                 </div>
             </div>
         }
     </div>
-
-    <p class="text-muted small text-center mt-4">Showing all @Model.AvailableTasks.Count tasks</p>
 }
+
 
 <!-- Task Detail Modals -->
 @foreach (var task in Model.AvailableTasks)
@@ -302,7 +304,7 @@ else
                         <p class="mb-0 small text-muted">@task.CreatedAt.ToString("MMMM dd, yyyy 'at' hh:mm tt")</p>
                     </div>
                 </div>
-
+                
                 <div class="modal-footer border-top px-4 py-3">
                     @if (isMyTask)
                     {
@@ -311,7 +313,7 @@ else
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     }
-                    else
+                    else  
                     {
                         <div class="w-100 d-flex justify-content-between align-items-center">
                             <span class="text-muted small">Balance: <strong>@Model.UserCoinBalance coins</strong></span>
@@ -332,8 +334,9 @@ else
             </div>
         </div>
     </div>
-}
 
+}
+</div>
 @section Styles {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 }
