@@ -275,7 +275,7 @@
                                     Waiting for a student to accept this task.
                                     <form asp-controller="Task" asp-action="CancelTask" method="post">
                                         <input type="hidden" name="id" value="@task.TaskId" />
-                                        <button type="submit" class="btn btn-outline-danger w-100 fw-bold" onclick="return confirm('Cancel this task and refund coins?');">
+                                        <button type="submit" class="btn btn-outline-danger w-100 fw-bold mt-3" onclick="return confirm('Cancel this task and refund coins?');">
                                             <i class="bi bi-x-circle"></i> Cancel Task
                                         </button>
                                     </form>

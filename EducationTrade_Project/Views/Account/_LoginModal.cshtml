@@ -1,4 +1,4 @@
-﻿@model EducationTrade.Core.DTOs.LoginDto
+@model EducationTrade.Core.DTOs.LoginDto
 
 <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
 
@@ -29,8 +29,11 @@
                         Forgot Password?
                     </a>
                 </div>
-                <input asp-for="Password" type="password" class="form-control form-control-lg bg-light border-light-subtle fs-6 mt-2" placeholder="Enter your password" />
-                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                <div class="input-group mt-2">
+                    <input asp-for="Password" type="password" class="form-control form-control-lg bg-light border-light-subtle border-end-0 fs-6" placeholder="Enter your password" />
+                    <span class="input-group-text bg-light border-light-subtle border-start-0 toggle-password-btn" style="cursor: pointer;"><i class="bi bi-eye-slash"></i>
+                        </span>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary w-100 btn-lg fw-medium mt-2 fs-6">Sign in</button>
