@@ -61,7 +61,7 @@
         <span class="text-secondary small">
             Already have an account?
             <!-- This triggers HTMX to load the login modal! -->
-            <a href="#" class="text-primary fw-medium text-decoration-none" hx-get="/Account/LoginModal" hx-target="#auth-modal-content-area">Sign in</a>
+            <a href="#" hx-boost="true" class="text-primary fw-medium text-decoration-none" hx-get="/Account/LoginModal" hx-target="#auth-modal-content-area">Sign in</a>
         </span>
     </div>
 

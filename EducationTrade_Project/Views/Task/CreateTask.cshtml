@@ -1,109 +1,120 @@
 ﻿@model EducationTrade.Web.ViewModels.CreateTaskViewModel
 
 @{
-    ViewData["Title"] = "Create New Task";
+    ViewData["Title"] = "Create Task";
 }
+<style>
+    .textColor
+    {
+        color: #0D9BD4;
+    }
+</style>
+<!-- Added 'container-md' and 'px' padding to create nice whitespace on the left and right -->
+<div class="container-md px-4 px-lg-5 mt-4">
 
-<div class="row justify-content-center mt-5">
-    <!-- Left Column: The Main Form -->
-    <div class="col-lg-8 col-md-12 mb-4">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <!-- 'gx-lg-5' creates a wider gap between the left and right columns -->
+    <div class="row gx-lg-5">
 
-            <!-- Card Header matching your Navbar gradient -->
-            <div class="card-header text-white p-4 border-0" style="background: linear-gradient(90deg, #0d6efd, #0a58ca);">
-                <h3 class="mb-1 fw-bold">Create a New Task</h3>
-                <p class="mb-0 text-white-50">Offer academic tasks to other students in exchange for coins.</p>
-            </div>
+        <!-- Left Column: The Main Form -->
+        <div class="col-lg-8 col-md-12 mb-4">
+            <div class="card shadow-sm border rounded-3">
 
-            <div class="card-body p-4 p-md-5">
-                <!-- Our Action points to the [HttpPost] Create method -->
-                <form asp-controller="Task" asp-action="Create" method="post">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 border-0 shadow-sm"></div>
-
-                    <!-- Task Title Input (Floating Label) -->
-                    <div class="form-floating mb-4">
-                        <input asp-for="Title" class="form-control bg-light border-0 shadow-none" id="floatingTitle" placeholder="Enter task title" />
-                        <label asp-for="Title" for="floatingTitle" class="text-muted">Task Title</label>
-                        <span asp-validation-for="Title" class="text-danger small fw-bold"></span>
-                    </div>
-
-                    <!-- Task Description TextArea (Floating Label) -->
-                    <div class="form-floating mb-4">
-                        <textarea asp-for="Description" class="form-control bg-light border-0 shadow-none" id="floatingDescription" placeholder="Describe the task" style="height: 160px"></textarea>
-                        <label asp-for="Description" for="floatingDescription" class="text-muted">Detailed Description</label>
-                        <span asp-validation-for="Description" class="text-danger small fw-bold"></span>
-                    </div>
-
-                    <!-- Reward Slider / Number Input -->
-                    <div class="row g-3 mb-5 align-items-center">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="CoinReward" type="number" class="form-control bg-light border-0 shadow-none" id="floatingReward" placeholder="Coins to reward" min="1" max="1000" />
-                                <label asp-for="CoinReward" for="floatingReward" class="text-muted">Coin Reward 🪙</label>
-                                <span asp-validation-for="CoinReward" class="text-danger small fw-bold"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 text-md-end text-start mt-4 mt-md-0">
-                            <!-- Display User's Available Balance nicely styled -->
-                            <div class="p-3 bg-light rounded-3 d-inline-block border border-2 border-white shadow-sm">
-                                <span class="text-muted small d-block mb-1 text-uppercase fw-bold" style="letter-spacing: 0.5px;">Available Balance</span>
-                                <span class="fw-bold fs-5 text-warning">
-                                    🪙 @Model.UserCoinBalance Coins
-                                </span>    
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="d-grid mt-2">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm py-3" style="background: linear-gradient(90deg, #0d6efd, #0a58ca); border: none; transition: transform 0.2s;">
-                            Publish Task ✨
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Right Column: User Info & Tips Panel -->
-    <div class="col-lg-4 col-md-12">
-        <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center mb-4">
-                    <!-- A neat placeholder avatar -->
-                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm me-3" style="width: 50px; height: 50px; font-size: 1.2rem;">
-                        @(Model.UserName?.Substring(0, 1).ToUpper() ?? "U")
-                    </div>
-                    <div>
-                        <h5 class="fw-bold mb-0">Hi, @Model.UserName! 👋</h5>
-                        <small class="text-muted">Ready to get things done?</small>
-                    </div>
+                <!-- Explicit Card Header gives it a classic "Form" panel structure -->
+                <div class="card-header bg-light border-bottom py-3 px-4 px-md-5">
+                    <h4 class="mb-0 fw-bold textColor">Create a New Task</h4>
+                    <p class="text-muted mb-0 small">Fill out the details below to request a service.</p>
                 </div>
 
-                <hr class="text-muted opacity-25 my-4" />
+                <div class="card-body p-4 p-md-5">
+                    <form asp-controller="Task" asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
 
-                <h6 class="fw-bold mb-3 text-secondary">Tips for a great task:</h6>
+                        <!-- Task Title Input -->
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label fw-semibold text-dark">
+                                Task Title <span class="text-danger">*</span>
+                            </label>
+                            <!-- Classic white background and standard border makes it explicitly a form input -->
+                            <input asp-for="Title" class="form-control form-control-lg border border-1" placeholder="e.g., Need help with Calculus assignment" />
+                            <span asp-validation-for="Title" class="text-danger small fw-bold mt-1 d-block"></span>
+                        </div>
 
-                <ul class="list-unstyled text-secondary" style="font-size: 0.95rem;">
-                    <li class="mb-3 d-flex">
-                        <span class="text-primary me-3 fw-bold fs-5">•</span>
-                        <div><strong class="text-dark">Be specific:</strong> A highly detailed description helps peers understand exactly what you need.</div>
-                    </li>
-                    <li class="mb-3 d-flex">
-                        <span class="text-primary me-3 fw-bold fs-5">•</span>
-                        <div><strong class="text-dark">Fair pricing:</strong> Ensure the coin reward reflects the effort accurately!</div>
-                    </li>
-                    <li class="mb-3 d-flex">
-                        <span class="text-primary me-3 fw-bold fs-5">•</span>
-                        <div><strong class="text-dark">Stay active:</strong> Check your dashboard often to review interested peers.</div>
-                    </li>
-                </ul>
+                        <!-- Task Description TextArea -->
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-semibold text-dark">
+                                Detailed Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea asp-for="Description" class="form-control border border-1" placeholder="Explain what you need done..." style="height: 150px"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small fw-bold mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Reward Number Input -->
+                        <div class="mb-4">
+                            <label asp-for="CoinReward" class="form-label fw-semibold text-dark">
+                                Coin Reward Amount <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border border-1 border-end-0">🪙</span>
+                                <input asp-for="CoinReward" type="number" class="form-control border border-1 border-start-0 ps-0" placeholder="0" min="1" max="1000" />
+                            </div>
+                            <div class="form-text mt-2 text-muted">
+                                Your Available Balance: <strong class="text-success">@Model.UserCoinBalance Coins</strong>
+                            </div>
+                            <span asp-validation-for="CoinReward" class="text-danger small fw-bold mt-1 d-block"></span>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+
+                        <!-- Submit Button matching the Application's deep blue (#0a58ca) -->
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-lg w-100 fw-bold rounded-2 text-white shadow-sm" style="background-color: #0a58ca; border-color: #0a58ca;">
+                                Publish Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
+
+        <!-- Right Column: User Info & Guidelines Panel -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card shadow-sm border rounded-3 mb-4 bg-light">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+                        <!-- Profile Avatar placeholder -->
+                        <div class="d-inline-flex align-items-center justify-content-center bg-white border border-2 shadow-sm text-dark rounded-circle mb-3 fw-bold" style="width: 65px; height: 65px; font-size: 1.6rem; border-color: #0D9BD4  !important;">
+                            @(Model.UserName?.Substring(0, 1).ToUpper() ?? "U")
+                        </div>
+                        <h5 class="fw-bold mb-1 text-dark">Hi, @Model.UserName! 👋</h5>
+                        <p class="text-muted small">Let's get your task listed.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-3 border">
+                        <h6 class="fw-bold mb-3 text-dark border-bottom pb-2">Guidelines for Success</h6>
+
+                        <ul class="list-unstyled text-secondary mb-0">
+                            <li class="mb-3 d-flex align-items-start">
+                                <span class="me-2 fw-bold fs-5 lh-1 mt-1" style="color: #0D9BD4 ;">•</span>
+                                <div class="small"><strong class="text-dark">Be specific:</strong> A clear description helps you get responses faster.</div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start">
+                                <span class="me-2 fw-bold fs-5 lh-1 mt-1" style="color: #0D9BD4 ;">•</span>
+                                <div class="small"><strong class="text-dark">Fair pricing:</strong> Offer a coin reward that matches the effort required.</div>
+                            </li>
+                            <li class="d-flex align-items-start">
+                                <span class="me-2 fw-bold fs-5 lh-1 mt-1" style="color: #0D9BD4 ;">•</span>
+                                <div class="small"><strong class="text-dark">Stay active:</strong> Don't forget to check back and accept students when they apply!</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<!-- Included client-side validation for instant feedback without reloading the page -->
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

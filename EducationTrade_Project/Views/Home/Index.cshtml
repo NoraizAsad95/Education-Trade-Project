@@ -14,13 +14,13 @@
             <div class="mt-4">
                 <a data-bs-toggle="modal" data-bs-target="#auth-modal"
                    hx-get="/Account/RegisterModal"
-                   hx-target="#auth-modal-content-area" class="btn btn-light btn-lg me-3">
+                   hx-target="#auth-modal-content-area" hx-boost="true"  class="btn btn-light btn-lg me-3">
                     Get Started
                 </a>
                 <a 
                    data-bs-toggle="modal" data-bs-target="#auth-modal"
                    hx-get="/Account/LoginModal"
-                   hx-target="#auth-modal-content-area" class="btn btn-outline-light btn-lg">
+                   hx-target="#auth-modal-content-area" hx-boost="true" class="btn btn-outline-light btn-lg">
                      Login
                 </a>
             </div>
