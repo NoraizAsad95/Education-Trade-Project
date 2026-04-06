@@ -348,12 +348,26 @@
                                     <div class="alert alert-warning border-0 shadow-sm p-3 text-center mb-0">
                                         <h6 class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Review & Complete</h6>
                                         <p class="small mb-3">If the work delivered in the chat looks good, complete the task to release coins.</p>
-                                        <form asp-controller="Task" asp-action="CompleteTask" method="post">
+                                        <form asp-controller="Task" asp-action="CompleteTask" method="post" id="completeTaskForm_@task.TaskId">
                                             <input type="hidden" name="id" value="@task.TaskId" />
-                                            <button type="submit" class="btn btn-success w-100 fw-bold" onclick="return confirm('Transfer coins to @task.OtherUserName and map task as complete?');">
-                                                <i class="bi bi-check2-all"></i> Accept Work & Pay Coins
+                                            <input type="hidden" name="score" id="ratingInput_@task.TaskId" value="5" /> <!-- Default Score -->
+
+                                            <div class="mb-3 border rounded p-2 bg-white">
+                                                <p class="small text-muted fw-bold mb-1">Rate the Worker (1-5)</p>
+                                                <div class="interactive-stars fs-5" data-taskid="@task.TaskId" style="cursor: pointer;">
+                                                    <i class="bi bi-star-fill text-warning star-btn" data-val="1"></i>
+                                                    <i class="bi bi-star-fill text-warning star-btn" data-val="2"></i>
+                                                    <i class="bi bi-star-fill text-warning star-btn" data-val="3"></i>
+                                                    <i class="bi bi-star-fill text-warning star-btn" data-val="4"></i>
+                                                    <i class="bi bi-star-fill text-warning star-btn" data-val="5"></i>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-success w-100 fw-bold" onclick="return confirm('Transfer coins to @task.OtherUserName and rate them?');">
+                                                <i class="bi bi-check-circle-fill"></i> Accept Work & Pay Coins
                                             </button>
                                         </form>
+
                                         <div class=""></div>
                                         <form asp-controller="Task" asp-action="RequestRevision" method="post" class="mt-2">
                                             <input type="hidden" name="id" value="@task.TaskId" />
@@ -519,8 +533,8 @@
 }
 
 <script>
-    // This script ensures that when the page reloads after submitting a form, it opens the correct tab
-    document.addEventListener("DOMContentLoaded", function () {
+        // Interactive Star Logic
+        document.addEventListener("DOMContentLoaded", function () {
         var activeTab = '@TempData["ActiveTab"]';
         if (activeTab) {
             var tabElement = document.getElementById(activeTab);
@@ -530,8 +544,10 @@
             }
         }
     });
-
-    // Code to Auto-scroll all chat boxes to the bottom when a modal opens
+    /* =========================================
+       2. CHAT AUTO-SCROLL (Restored)
+       Scrolls chat to the bottom when modal opens
+       ========================================= */
     var modals = document.querySelectorAll('.modal');
     modals.forEach(function(modal) {
         modal.addEventListener('shown.bs.modal', function () {
@@ -541,4 +557,32 @@
             }
         });
     });
+
+    document.querySelectorAll('.interactive-stars').forEach(container => {
+        const stars = container.querySelectorAll('.star-btn');
+        const taskId = container.getAttribute('data-taskid');
+        const hiddenInput = document.getElementById('ratingInput_' + taskId);
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                let ratingValue = parseInt(this.getAttribute('data-val'));
+                hiddenInput.value = ratingValue; // Update hidden input
+
+                // Loop through all 5 stars in THIS specific modal to color them
+                stars.forEach(s => {
+                    let thisStarVal = parseInt(s.getAttribute('data-val'));
+                    if (thisStarVal <= ratingValue) {
+                        s.classList.replace('bi-star', 'bi-star-fill');
+                        s.classList.remove('text-secondary');
+                        s.classList.add('text-warning');
+                    } else {
+                        s.classList.replace('bi-star-fill', 'bi-star');
+                        s.classList.remove('text-warning');
+                        s.classList.add('text-secondary');
+                    }
+                });
+            });
+        });
+    });
+
 </script>

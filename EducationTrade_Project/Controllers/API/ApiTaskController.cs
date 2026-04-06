@@ -59,9 +59,9 @@ namespace EducationTrade.Web.Controllers.API
         }
 
         [HttpGet("{taskId}/complete")]
-        public async Task<IActionResult> CompleteTask(int taskId, int creatorId)
+        public async Task<IActionResult> CompleteTask(int taskId, int creatorId, int ratingScore)
         {
-            var result = await _taskService.CompleteTaskAsync(taskId, creatorId);
+            var result = await _taskService.CompleteTaskAsync(taskId, creatorId, ratingScore);
             if(!result.IsSuccess)
                 return BadRequest(result.Error);
             return Ok(new { message = "Task completed successfully" });

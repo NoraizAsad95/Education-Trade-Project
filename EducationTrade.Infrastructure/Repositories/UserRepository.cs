@@ -51,5 +51,12 @@ namespace EducationTrade.Infrastructure.Repositories
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
+        public async Task<Rating> AddRatingAsync(Rating rating)
+        {
+            _context.Add(rating);
+            await _context.SaveChangesAsync();
+            return rating;
+        }
+
     }
 }

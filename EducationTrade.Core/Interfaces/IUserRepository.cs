@@ -15,6 +15,8 @@ namespace EducationTrade.Core.Interfaces
         Task<User> AddAsync(User user);
         System.Threading.Tasks.Task UpdateAsync(User user);
         Task<bool> EmailExistsAsync(string email);
+        Task<Rating> AddRatingAsync(Rating rating);
+
 
     }
 }

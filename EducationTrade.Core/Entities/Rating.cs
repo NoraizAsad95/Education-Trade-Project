@@ -11,10 +11,12 @@ namespace EducationTrade.Core.Entities
     {
         [Key]
         public int RatingId { get; set; }
+        public int TaskId { get; set; }
+        public int RatedUserId { get; set; }
+        public int RatedByUserId { get; set; }
 
-        public string RatedUserId { get; set; }
-        public string RatedByUserId { get; set; }
-
+        [Range(1, 5)]
         public int Score { get; set; } // 1 to 5
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
