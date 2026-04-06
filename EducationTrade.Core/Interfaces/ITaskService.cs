@@ -13,7 +13,7 @@ namespace EducationTrade.Core.Interfaces
     {
         Task<Result> CreateTaskAsync(CreateTaskDto dto, int creatorId);
         Task<Result> AcceptTaskAsync(int taskId, int accepterId);
-        Task<Result> CompleteTaskAsync(int taskId, int creatorId);
+        Task<Result> CompleteTaskAsync(int taskId, int creatorId, int ratingScore);
         Task<Result<List<Core.Entities.Task>>> GetAvailableTaskAsync();
         Task<Result<List<Core.Entities.Task>>> GetMyCreatedTasksAsync(int userId);
         Task<Result<List<Core.Entities.Task>>> GetMyAcceptedTasksAsync(int userId);

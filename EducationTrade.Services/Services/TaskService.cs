@@ -48,7 +48,7 @@ namespace EducationTrade.Services.Services
             return Result.Success();
         }
 
-        public async Task<Result> CompleteTaskAsync(int taskId, int creatorId)
+        public async Task<Result> CompleteTaskAsync(int taskId, int creatorId, int ratingScore)
         {
             var task = await _taskRepository.GetByIdAsync(taskId);
             if (task == null)
@@ -70,6 +70,26 @@ namespace EducationTrade.Services.Services
             // 4. Transfer coins to accepter
             var accepter = await _userRepository.GetByIdAsync(task.AcceptedById.Value);
             accepter.CoinBalance += task.CoinReward;
+
+            if (ratingScore >= 1 && ratingScore <= 5)
+            {
+                decimal currentTotalScore = accepter.AverageRating * accepter.TotalRatings;
+                decimal newTotalScore = currentTotalScore + ratingScore;
+
+                accepter.TotalRatings += 1;
+                accepter.AverageRating = newTotalScore / accepter.TotalRatings;
+                // Create the History Record
+                var rating = new Rating
+                {
+                    TaskId = taskId,
+                    RatedUserId = accepter.UserId,
+                    RatedByUserId = creatorId,
+                    Score = ratingScore,
+                    CreatedAt = DateTime.Now
+                };
+                await _userRepository.AddRatingAsync(rating);
+            }
+
             await _userRepository.UpdateAsync(accepter);
 
             // 5. Update task status

@@ -146,14 +146,16 @@ namespace EducationTrade.Presentation.Controllers.MVC
         }
 
         [HttpPost]
-        public async Task<IActionResult> CompleteTask(int id)
+        public async Task<IActionResult> CompleteTask(int id, int score = 5)
         {
             var user = HttpContext.Session.GetInt32("UserId");
             if (user == null)
             {
                 return RedirectToAction("LogIn", "Account");
             }
-            var result = await _taskService.CompleteTaskAsync(id, user.Value);
+            if (score < 1 || score > 5)
+                score = 5;
+            var result = await _taskService.CompleteTaskAsync(id, user.Value, score);
             if (!result.IsSuccess)
             {
                 TempData["Error"] = result.Error;
