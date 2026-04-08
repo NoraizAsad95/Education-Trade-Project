@@ -1,5 +1,6 @@
 using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Entities;
+using EducationTrade.Core.Enums;
 using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
 
@@ -113,6 +114,18 @@ namespace EducationTrade.Services.Services
             user.CoinBalance = 200;  
             user.UpdatedAt = DateTime.Now;
 
+            // Transaction Record
+            var registrationTrans = new CoinTransaction
+            {
+                FromUserId = null,  
+                ToUserId = user.UserId,
+                Coins = 200,
+                Type = TransactionType.Registration,
+                Description = "Initial signup bonus",
+                CreatedAt = DateTime.Now
+            };
+            await _userRepository.AddCoinTransactionAsync(registrationTrans);
+            
             await _userRepository.UpdateAsync(user);
 
             // Send welcome email

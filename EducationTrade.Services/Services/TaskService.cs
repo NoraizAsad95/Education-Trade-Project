@@ -71,6 +71,19 @@ namespace EducationTrade.Services.Services
             var accepter = await _userRepository.GetByIdAsync(task.AcceptedById.Value);
             accepter.CoinBalance += task.CoinReward;
 
+            // Transaction Record
+            var transaction = new CoinTransaction
+            {
+                FromUserId = creatorId,          
+                ToUserId = accepter.UserId,      
+                Coins = task.CoinReward,
+                Type = TransactionType.TaskCompletion,
+                Description = $"Coins earned for completing task ID: {taskId}",
+                CreatedAt = DateTime.Now
+            };
+            await _userRepository.AddCoinTransactionAsync(transaction);
+
+            // Ratings
             if (ratingScore >= 1 && ratingScore <= 5)
             {
                 decimal currentTotalScore = accepter.AverageRating * accepter.TotalRatings;
@@ -121,6 +134,19 @@ namespace EducationTrade.Services.Services
                 return Result.Failure($"Insufficient coins. You have {creator.CoinBalance}, need {dto.CoinReward}");
             }
             creator.CoinBalance -= dto.CoinReward;
+
+            // Transaction Record
+            var creationTrans = new CoinTransaction
+            {
+                FromUserId = creator.UserId,
+                ToUserId = 0,
+                Coins = -dto.CoinReward, 
+                Type = TransactionType.TaskCreation,
+                Description = $"Coins locked for creating task: {dto.Title}",
+                CreatedAt = DateTime.Now
+            };
+            await _userRepository.AddCoinTransactionAsync(creationTrans);
+
             await _userRepository.UpdateAsync(creator);
             var task = new Core.Entities.Task()
             { 
@@ -161,18 +187,31 @@ namespace EducationTrade.Services.Services
             var task = await _taskRepository.GetByIdAsync(taskId);
             if (task == null) return Result.Failure("Task not found");
 
-            // Security Check: Only the Creator can cancel the task
+            
             if (task.CreatedById != creatorId) return Result.Failure("Only the task creator can cancel this task");
 
-            // Status Check: You can only cancel a task if it hasn't been accepted yet
+            
             if (task.Status != TaskState.Pending) return Result.Failure("You cannot cancel a task that is already accepted or completed.");
 
-            // Refund the Coins back to the Creator
+            
             var creator = await _userRepository.GetByIdAsync(creatorId);
             creator.CoinBalance += task.CoinReward;
+
+            // Transaction Record
+            var refundTrans = new CoinTransaction
+            {
+                FromUserId = 0, 
+                ToUserId = creator.UserId,
+                Coins = task.CoinReward,
+                Type = TransactionType.Refund,
+                Description = $"Coins refunded for cancelling task ID: {taskId}",
+                CreatedAt = DateTime.Now
+            };
+            await _userRepository.AddCoinTransactionAsync(refundTrans);
+
             await _userRepository.UpdateAsync(creator);
 
-            // Update the Task Status
+            
             task.Status = TaskState.Cancelled;
             await _taskRepository.UpdateAsync(task);
 

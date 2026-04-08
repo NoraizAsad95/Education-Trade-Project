@@ -1,4 +1,4 @@
-﻿using EducationTrade.Core.Entities;
+using EducationTrade.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace EducationTrade.Core.Interfaces
         System.Threading.Tasks.Task UpdateAsync(User user);
         Task<bool> EmailExistsAsync(string email);
         Task<Rating> AddRatingAsync(Rating rating);
-
+        Task<CoinTransaction> AddCoinTransactionAsync(CoinTransaction transaction);
 
     }
 }

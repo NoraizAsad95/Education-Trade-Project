@@ -1,4 +1,4 @@
-﻿using EducationTrade.Core.Enums;
+using EducationTrade.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,6 +19,7 @@ namespace EducationTrade.Core.Entities
         public int Coins { get; set; }
         public string Description { get; set; }
         public TransactionType Type { get; set; }
-       
+        public DateTime CreatedAt { get; set; } 
+
     }
 }

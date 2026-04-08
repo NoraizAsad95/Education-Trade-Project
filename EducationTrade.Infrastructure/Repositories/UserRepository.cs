@@ -1,4 +1,4 @@
-﻿using EducationTrade.Core.Entities;
+using EducationTrade.Core.Entities;
 using EducationTrade.Core.Interfaces;
 using EducationTrade.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -58,5 +58,11 @@ namespace EducationTrade.Infrastructure.Repositories
             return rating;
         }
 
+        public async Task<CoinTransaction> AddCoinTransactionAsync(CoinTransaction transaction)
+        {
+            _context.CoinTransactions.Add(transaction);
+            await _context.SaveChangesAsync();
+            return transaction;
+        }
     }
 }
