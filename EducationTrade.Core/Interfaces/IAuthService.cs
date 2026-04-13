@@ -12,8 +12,10 @@ namespace EducationTrade.Core.Interfaces
     {
         Task<Result> RegisterAsync(RegisterDto dto);
         Task<Result<int>> LoginAsync(LoginDto dto);
+        Task<Result<string>> LoginApiAsync(LoginDto dto);
         Task<Result> VerifyEmailAsync(string email, string token);
         Task<Result<string>> ForgotPasswordAsync(ForgotPasswordDto dto);
         Task<Result> ResetPasswordAsync(ResetPasswordDto dto);
+        
     }
 }

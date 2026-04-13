@@ -1,11 +1,13 @@
 using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EducationTrade.Presentation.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -38,12 +40,12 @@ namespace EducationTrade.Presentation.Controllers.API
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.LoginAsync(dto);
+            var result = await _authService.LoginApiAsync(dto);
             if(!result.IsSuccess)
             {
                 return BadRequest(result);
             }
-            return Ok("Login successful");
+            return Ok(new { token = result.Data });
         }
 
     }

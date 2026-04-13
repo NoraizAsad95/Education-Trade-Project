@@ -185,13 +185,13 @@ namespace EducationTrade.Presentation.Controllers.MVC
 
             if (result.IsSuccess && !string.IsNullOrEmpty(result.Data))
             {
-                var token = result.Data; 
-                var resetLink = Url.Action("ResetPassword", "Account",
+               var token = result.Data; 
+               var resetLink = Url.Action("ResetPassword", "Account",
                     new { email = model.Email, token = token },
                     protocol: Request.Scheme);
                 await _emailService.SendPasswordResetEmailAsync(model.Email, resetLink);
             }
-            TempData["Success"] = "If an account with that email exists, we have sent a password reset link.";
+            TempData["Success"] = "If an account with that email exists, we have sent a password reset link.";    
             return RedirectToAction("Login");
         }
 

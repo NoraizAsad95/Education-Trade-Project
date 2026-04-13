@@ -3,13 +3,15 @@ using EducationTrade.Core.Entities;
 using EducationTrade.Core.Enums;
 using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
-
 using EducationTrade.Services.Helpers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,6 +85,39 @@ namespace EducationTrade.Services.Services
             //return Result.Success(user.UserId);
 
         }
+        public async Task<Result<string>> LoginApiAsync(LoginDto dto)
+        {
+            var user = await _userRepository.GetByEmailAsync(dto.Email);
+            if (user == null || !PasswordHasher.VerifyPassword(dto.Password, user.Password))
+                return Result<string>.Failure("Invalid email or password");
+            if (!user.IsEmailVerified)
+                return Result<string>.Failure("Please verify your email first.");
+            if (!user.IsActive)
+                return Result<string>.Failure("Account is deactivated.");
+
+            // Build JWT Claims
+            var claims = new[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Name, user.FullName)
+    };
+
+            // Build JWT Token
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                issuer: _config["JwtSettings:Issuer"],
+                audience: _config["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            return Result<string>.Success(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+
         public async Task<Result> VerifyEmailAsync(string email, string token)
         {
             var user = await _userRepository.GetByEmailAsync(email);
