@@ -18,7 +18,8 @@ namespace EducationTrade.Presentation.Controllers.MVC
             _taskService = taskService;
             _userRepository = userRepository;
         }
-        public async Task<IActionResult> Browse()
+        // 1. Add 'searchQuery' as a parameter
+        public async Task<IActionResult> Browse(string searchQuery)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -29,6 +30,22 @@ namespace EducationTrade.Presentation.Controllers.MVC
             var user = await _userRepository.GetByIdAsync(userId.Value);
             var result = await _taskService.GetAvailableTaskAsync();
 
+            // 2. Extract tasks into a list we can filter
+            var tasksList = result.Data.AsEnumerable();
+
+            // 3. Apply the search filtering (checking both Title and Description)
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                var query = searchQuery.ToLower();
+                tasksList = tasksList.Where(t =>
+                    (t.Title != null && t.Title.ToLower().Contains(query)) ||
+                    (t.Description != null && t.Description.ToLower().Contains(query)) // Remove this line if you ONLY want to search by Title
+                );
+            }
+
+            // 4. Store the search term in ViewData so the Search Bar keeps the text after searching
+            ViewData["SearchQuery"] = searchQuery;
+
             // Create ViewModel
             var viewModel = new TaskViewModel
             {
@@ -38,8 +55,8 @@ namespace EducationTrade.Presentation.Controllers.MVC
                 AvailableTasks = new List<TaskItemViewModel>()
             };
 
-            // Map each task to TaskItemViewModel
-            foreach (var task in result.Data)
+            // 5. Change "result.Data" to "tasksList" in your foreach loop!
+            foreach (var task in tasksList)
             {
                 var creator = await _userRepository.GetByIdAsync(task.CreatedById);
 
@@ -52,11 +69,8 @@ namespace EducationTrade.Presentation.Controllers.MVC
                     Status = task.Status.ToString(),
                     CreatedById = task.CreatedById,
                     CreatorName = creator.FullName,
-                    
                     CreatedAt = task.CreatedAt,
-                    TimeAgo = GetTimeAgo(task.CreatedAt),
-                    //CanAccept = task.CreatedById != userId.Value,  // Can't accept own tasks
-                   // StatusBadgeClass = GetStatusBadgeClass(task.Status.ToString())
+                    TimeAgo = GetTimeAgo(task.CreatedAt)
                 });
             }
 
@@ -64,7 +78,8 @@ namespace EducationTrade.Presentation.Controllers.MVC
         }
 
 
-        
+
+
         public async Task<IActionResult> CreateTask()
         {
             var userId = HttpContext.Session.GetInt32("UserId");

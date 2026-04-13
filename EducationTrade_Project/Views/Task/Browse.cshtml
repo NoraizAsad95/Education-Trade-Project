@@ -161,6 +161,26 @@
         </div>
     </div>
 
+    <!-- Search Bar -->
+<div class="mb-4">
+    <form asp-controller="Task" asp-action="Browse" method="get" class="d-flex gap-2 w-100" style="max-width: 600px;">
+        <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
+            <span class="input-group-text bg-white border-end-0 border-secondary-subtle">
+                <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" name="searchQuery" value="@ViewData["SearchQuery"]" class="form-control border-start-0 border-secondary-subtle ps-0" placeholder="Search tasks by title or required skills..." style="box-shadow: none;" />
+        </div>
+        <button type="submit" class="btn text-white fw-bold px-4 shadow-sm" style="background-color: #0D9BD4; border-radius: 8px; transition: transform 0.1s;">
+            Search
+        </button>
+        
+        <!-- Only show the "Clear" button if they have actually searched for something -->
+        @if (ViewData["SearchQuery"] != null && !string.IsNullOrWhiteSpace(ViewData["SearchQuery"].ToString()))
+        {
+            <a asp-controller="Task" asp-action="Browse" class="btn btn-light border border-secondary-subtle fw-semibold shadow-sm" style="border-radius: 8px;">Clear</a>
+        }
+    </form>
+</div>
 
 
 <div class="d-flex align-items-center mb-3">
