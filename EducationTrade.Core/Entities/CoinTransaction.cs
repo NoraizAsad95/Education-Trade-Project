@@ -14,7 +14,7 @@ namespace EducationTrade.Core.Entities
         [Key]
         public int TransactionId { get; set; }
         public int? FromUserId { get; set; }
-        public int ToUserId { get; set; }
+        public int? ToUserId { get; set; }
 
         public int Coins { get; set; }
         public string Description { get; set; }

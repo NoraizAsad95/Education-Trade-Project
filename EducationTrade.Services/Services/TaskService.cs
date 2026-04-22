@@ -139,7 +139,7 @@ namespace EducationTrade.Services.Services
             var creationTrans = new CoinTransaction
             {
                 FromUserId = creator.UserId,
-                ToUserId = 0,
+                ToUserId = null,
                 Coins = -dto.CoinReward, 
                 Type = TransactionType.TaskCreation,
                 Description = $"Coins locked for creating task: {dto.Title}",

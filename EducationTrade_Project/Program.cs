@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -107,9 +105,9 @@ app.UseAuthorization();
 
 // API routing
 
-app.MapGet("/", () => Results.Redirect("/swagger"));
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapControllers();
 app.Run();
