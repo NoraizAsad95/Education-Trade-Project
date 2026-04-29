@@ -59,7 +59,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
         };
-    });
+    })
+  .AddGoogle(options =>
+  {
+     options.ClientId = builder.Configuration["OAuth:Google:ClientId"];
+     options.ClientSecret = builder.Configuration["OAuth:Google:ClientSecret"];
+     options.CallbackPath = "/signin-google";  // Google will redirect here
+     options.Scope.Add("email");
+     options.Scope.Add("profile");
+  });
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

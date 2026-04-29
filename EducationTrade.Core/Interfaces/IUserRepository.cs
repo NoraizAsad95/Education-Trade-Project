@@ -17,6 +17,7 @@ namespace EducationTrade.Core.Interfaces
         Task<bool> EmailExistsAsync(string email);
         Task<Rating> AddRatingAsync(Rating rating);
         Task<CoinTransaction> AddCoinTransactionAsync(CoinTransaction transaction);
+        Task<User?> GetByOAuthProviderAsync(string provider, string providerId);
 
     }
 }

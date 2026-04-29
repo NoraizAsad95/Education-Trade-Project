@@ -3,6 +3,9 @@ using EducationTrade.Core.Helpers;
 using EducationTrade.Core.Interfaces;
 using EducationTrade.Services.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace EducationTrade.Presentation.Controllers.MVC
 {
@@ -221,6 +224,53 @@ namespace EducationTrade.Presentation.Controllers.MVC
             }
             TempData["Success"] = "Your password has been reset successfully. Please log in.";
             return RedirectToAction("Login");
+        }
+
+        [HttpGet]
+        public IActionResult ExternalLogin(string provider, string returnUrl = "/Dashboard/Index")
+        {
+            // This tells ASP.NET Core to challenge the Google/GitHub scheme
+            var redirectUrl = Url.Action("OAuthCallback", "Account", new { returnUrl });
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            return Challenge(properties, provider);   // provider = "Google" or "GitHub"
+        }
+        [HttpGet]
+        public async Task<IActionResult> OAuthCallback(string returnUrl = "/Dashboard/Index")
+        {
+            // Read what Google/GitHub sent back
+            var result = await HttpContext.AuthenticateAsync("Cookies");
+            if (!result.Succeeded)
+            {
+                TempData["Error"] = "OAuth login failed. Please try again.";
+                return RedirectToAction("LogIn");
+            }
+            // Extract user info from the OAuth claims
+            var claims = result.Principal.Claims;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+            var fullName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var provider = result.Properties.Items[".AuthScheme"] ?? "Unknown";
+            // The unique ID this user has on that provider
+            var providerId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(providerId))
+            {
+                TempData["Error"] = "Could not retrieve your information from the provider.";
+                return RedirectToAction("LogIn");
+            }
+            // Hand off to your AuthService (finds or creates the user in YOUR DB)
+            var loginResult = await _authService.OAuthLoginAsync(provider, providerId, email, fullName ?? email);
+            if (!loginResult.IsSuccess)
+            {
+                TempData["Error"] = loginResult.Error;
+                return RedirectToAction("LogIn");
+            }
+            // Set up the same session you use for normal login
+            var userId = loginResult.Data;
+            var user = await _userRepository.GetByIdAsync(userId);
+            HttpContext.Session.SetInt32("UserId", userId);
+            HttpContext.Session.SetString("UserEmail", user.Email);
+            HttpContext.Session.SetString("UserName", user.FullName);
+            TempData["Success"] = $"Welcome, {user.FullName}! Logged in via {provider}.";
+            return LocalRedirect(returnUrl);
         }
     }
 }

@@ -64,5 +64,11 @@ namespace EducationTrade.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return transaction;
         }
+        public async Task<User?> GetByOAuthProviderAsync(string provider, string providerId)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.OAuthProvider == provider && u.OAuthProviderId == providerId);
+        }
+
     }
 }

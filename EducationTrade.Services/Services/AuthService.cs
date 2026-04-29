@@ -1,4 +1,4 @@
-using EducationTrade.Core.DTOs;
+﻿using EducationTrade.Core.DTOs;
 using EducationTrade.Core.Entities;
 using EducationTrade.Core.Enums;
 using EducationTrade.Core.Helpers;
@@ -210,6 +210,78 @@ namespace EducationTrade.Services.Services
             user.PasswordResetTokenExpiry = null;
             await _userRepository.UpdateAsync(user);
             return Result.Success();
+        }
+        public async Task<Result<int>> OAuthLoginAsync(string provider, string providerId, string email, string fullName)
+        {
+            //  Try to find user by their OAuth provider ID (most reliable — doesn't change)
+            var user = await _userRepository.GetByOAuthProviderAsync(provider, providerId);
+
+            if (user != null)
+            {
+                // User already exists via OAuth → just log them in
+                if (!user.IsActive)
+                    return Result<int>.Failure("Account is deactivated.");
+
+                return Result<int>.Success(user.UserId);
+            }
+
+            //  Check if a manual account with the same email exists
+            var existingUser = await _userRepository.GetByEmailAsync(email);
+            if (existingUser != null)
+            {
+                // Link OAuth to the existing manual account
+                existingUser.OAuthProvider = provider;
+                existingUser.OAuthProviderId = providerId;
+                existingUser.IsOAuthUser = true;
+                existingUser.IsEmailVerified = true; // Google/GitHub already verified their email
+                await _userRepository.UpdateAsync(existingUser);
+
+                return Result<int>.Success(existingUser.UserId);
+            }
+
+            //  Brand new user via OAuth → auto-register them
+            var newUser = new User
+            {
+                Email = email,
+                FullName = fullName,
+                Password = string.Empty,           // No password for OAuth users
+                IsEmailVerified = true,            // Provider already verified
+                IsOAuthUser = true,
+                OAuthProvider = provider,
+                OAuthProviderId = providerId,
+                IsActive = true,
+                CoinBalance = 0,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            var savedUser = await _userRepository.AddAsync(newUser);
+
+            // Give them the 200 coin signup bonus
+            var registrationTrans = new CoinTransaction
+            {
+                FromUserId = null,
+                ToUserId = savedUser.UserId,
+                Coins = 200,
+                Type = TransactionType.Registration,
+                Description = "Initial signup bonus (OAuth)",
+                CreatedAt = DateTime.Now
+            };
+            await _userRepository.AddCoinTransactionAsync(registrationTrans);
+            savedUser.CoinBalance = 200;
+            await _userRepository.UpdateAsync(savedUser);
+
+            // Send welcome email 
+            try
+            {
+                await _emailService.SendWelcomeEmailAsync(savedUser.Email, savedUser.FullName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Welcome email failed: {ex.Message}");
+            }
+
+            return Result<int>.Success(savedUser.UserId);
         }
 
 

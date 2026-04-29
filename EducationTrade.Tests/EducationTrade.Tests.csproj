@@ -10,8 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.3.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="8.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.26" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.23" />

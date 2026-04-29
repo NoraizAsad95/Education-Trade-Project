@@ -35,5 +35,8 @@ namespace EducationTrade.Core.Entities
         public DateTime? EmailVerificationTokenExpiry { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpiry { get; set; }
+        public bool IsOAuthUser { get; set; } = false;
+        public string? OAuthProvider { get; set; }      // Google or GitHub
+        public string? OAuthProviderId { get; set; }
     }
 }
