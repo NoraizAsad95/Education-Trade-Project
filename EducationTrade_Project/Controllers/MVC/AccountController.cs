@@ -269,8 +269,53 @@ namespace EducationTrade.Presentation.Controllers.MVC
             HttpContext.Session.SetInt32("UserId", userId);
             HttpContext.Session.SetString("UserEmail", user.Email);
             HttpContext.Session.SetString("UserName", user.FullName);
+            if (string.IsNullOrEmpty(user.Course) || string.IsNullOrEmpty(user.Specialty))
+            {
+                TempData["Info"] = "Welcome! Please complete your profile to continue.";
+                return RedirectToAction("CompleteProfile");
+            }
             TempData["Success"] = $"Welcome, {user.FullName}! Logged in via {provider}.";
             return LocalRedirect(returnUrl);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CompleteProfile()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("LogIn");
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+            if (user == null) return RedirectToAction("LogIn");
+
+            // Already complete → skip this page
+            if (!string.IsNullOrEmpty(user.Course) && !string.IsNullOrEmpty(user.Specialty))
+                return RedirectToAction("Index", "Dashboard");
+
+            var model = new CompleteProfileDto { FullName = user.FullName };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CompleteProfile(CompleteProfileDto model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("LogIn");
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+            if (user == null) return RedirectToAction("LogIn");
+
+            user.FullName = model.FullName;
+            user.Course = model.Course;
+            user.Specialty = model.Specialty;
+            await _userRepository.UpdateAsync(user);
+
+            HttpContext.Session.SetString("UserName", user.FullName);
+
+            TempData["Success"] = "Profile completed! Welcome to EducationTrade.";
+            return RedirectToAction("Index", "Dashboard");
+        }
+
     }
 }

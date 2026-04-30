@@ -25,11 +25,8 @@ namespace EducationTrade.Core.Entities
 
         // Account Status
         public bool IsActive { get; set; } = true;
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-
-        // ✅ NEW: Email Verification Fields
         public bool IsEmailVerified { get; set; } = false;
         public string? EmailVerificationToken { get; set; }
         public DateTime? EmailVerificationTokenExpiry { get; set; }

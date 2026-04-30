@@ -1,0 +1,44 @@
+﻿@model EducationTrade.Core.DTOs.CompleteProfileDto
+
+@{
+    ViewData["Title"] = "Complete Profile";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm border-0" style="border-radius: 16px; width: 100%; max-width: 480px;">
+        <div class="card-body p-5">
+
+            <h3 class="fw-bold text-dark mb-1">Complete Your Profile</h3>
+            <p class="text-secondary mb-4">Just a few more details to get started</p>
+
+            <form asp-action="CompleteProfile" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger small fw-medium mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-medium text-dark small">Full Name</label>
+                    <input asp-for="FullName" class="form-control form-control-lg bg-light border-light-subtle fs-6" />
+                    <span asp-validation-for="FullName" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Course" class="form-label fw-medium text-dark small">Course</label>
+                    <input asp-for="Course" class="form-control form-control-lg bg-light border-light-subtle fs-6"
+                           placeholder="e.g. Computer Science" />
+                    <span asp-validation-for="Course" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Specialty" class="form-label fw-medium text-dark small">Specialty</label>
+                    <input asp-for="Specialty" class="form-control form-control-lg bg-light border-light-subtle fs-6"
+                           placeholder="e.g. Web Development" />
+                    <span asp-validation-for="Specialty" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg fw-medium">
+                    Complete Profile →
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
